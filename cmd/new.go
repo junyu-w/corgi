@@ -25,6 +25,13 @@ func create(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	fmt.Println(hcmds)
+	newSnippet, err := snippet.NewSnippet(hcmds)
+	if err != nil {
+		return err
+	}
+	if err := newSnippet.Save(); err != nil {
+		return err
+	}
 	return nil
 }
 

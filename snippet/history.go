@@ -45,6 +45,7 @@ func getHistoryFilePath() (string, error) {
 }
 
 func ReadShellHistory(last int) ([]string, error) {
+	last += 1 // we want at least the command before the corgi command itself
 	histFilePath, err := getHistoryFilePath()
 	if err != nil {
 		return nil, err

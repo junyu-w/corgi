@@ -9,14 +9,14 @@ type Snippets struct {
 }
 
 type Snippet struct {
-	Title   string     `json:"title"`
-	Steps   []StepInfo `json:"steps"`
-	FileLoc string     `json:"file_loc"`
+	Title   string      `json:"title"`
+	Steps   []*StepInfo `json:"steps"`
+	FileLoc string      `json:"file_loc"`
 }
 
 type StepInfo struct {
 	Command        string   `json:"command"`
-	Description    string   `json:"description"`
+	Description    string   `json:"description,omitempty"`
 	TemplateFields []string `json:"template_fields"`
 }
 
@@ -37,6 +37,37 @@ func (step *StepInfo) WriteAnswer(field string, value interface{}) error {
 	return nil
 }
 
-func (step *StepInfo) AskQuestion(command string) error {
+func (step *StepInfo) askQuestion() error {
+	// TODO: finish this
 	return nil
+}
+
+func (snippet *Snippet) AskQuestions(commands []string) error {
+	// TODO: finish this
+	fmt.Println("Asking Questions")
+	// set up history file and readline instance
+
+	// ask about each step
+	for _, step := range snippet.Steps {
+		err := step.askQuestion()
+		if err != nil {
+			return err
+		}
+	}
+	// ask about title
+	return nil
+}
+
+func (Snippet *Snippet) Save() error {
+	// TODO: finish this
+	fmt.Println("Saving snippet")
+	return nil
+}
+
+func NewSnippet(commands []string) (*Snippet, error) {
+	snippet := &Snippet{}
+	if err := snippet.AskQuestions(commands); err != nil {
+		return nil, err
+	}
+	return snippet, nil
 }
