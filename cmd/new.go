@@ -1,6 +1,10 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"corgi/snippet"
+	"fmt"
+	"github.com/spf13/cobra"
+)
 
 // flags
 var lastCmds int
@@ -11,9 +15,17 @@ var newCmd = &cobra.Command{
 	Use:   "new",
 	Short: "Create a new corgi snippet",
 	Long:  "Create a new corgi snippet from your command line history interactively",
-	Run: func(cmd *cobra.Command, args []string) {
-		// Create new snippet
-	},
+	RunE:  create,
+}
+
+func create(cmd *cobra.Command, args []string) error {
+	fmt.Println("New command called")
+	hcmds, err := snippet.ReadShellHistory(lastCmds)
+	if err != nil {
+		return err
+	}
+	fmt.Println(hcmds)
+	return nil
 }
 
 func init() {
