@@ -54,6 +54,7 @@ func ReadShellHistory(last int) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer file.Close()
 
 	parser, err := GetCmdParser(shellType)
 	if err != nil {

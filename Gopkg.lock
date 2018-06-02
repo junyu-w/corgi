@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/chzyer/readline"
+  packages = ["."]
+  revision = "62c6fe6193755f722b8b8788aa7357be55a50ff1"
+  version = "v1.4"
+
+[[projects]]
   name = "github.com/fatih/color"
   packages = ["."]
   revision = "5b77d2a35fb0ede96d138fc9a99f5c9b6aef11b4"
@@ -64,6 +70,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4b853f7154a92ec27f5be9a47d120530bbe8a6b0dc281885516702b5c9eef803"
+  inputs-digest = "4d3d5b4eaa5205d4d87da32faa8537cc02aa2a1de548437c6c6cdc5cdea35268"
   solver-name = "gps-cdcl"
   solver-version = 1

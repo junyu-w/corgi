@@ -19,7 +19,6 @@ var newCmd = &cobra.Command{
 }
 
 func create(cmd *cobra.Command, args []string) error {
-	fmt.Println("New command called")
 	hcmds, err := snippet.ReadShellHistory(lastCmds)
 	if err != nil {
 		return err
