@@ -1,6 +1,7 @@
 package snippet
 
 import (
+	"corgi/util"
 	"encoding/json"
 	"fmt"
 	"github.com/chzyer/readline"
@@ -94,8 +95,9 @@ func NewSnippet(title string, cmds []string) (*Snippet, error) {
 }
 
 func (snippet *Snippet) AskQuestion(options ...interface{}) error {
-	// ask about each step
+	// check options
 	initialDefaultCmds := options[0].([]string)
+	// ask about each step
 	stepCount := 0
 	steps := make([]*StepInfo, 0)
 	for {
@@ -158,4 +160,18 @@ func (snippet *Snippet) Save(snippetsDir string) error {
 	}
 	color.Green("Success")
 	return nil
+}
+
+func (snippet *Snippet) Execute() error {
+	color.Green("Start executing snippet \"%s\"...", snippet.Title)
+	// TODO: finish execution part
+	return nil
+}
+
+func LoadSnippet(filePath string) (*Snippet, error) {
+	snippet := &Snippet{}
+	if err := util.LoadJsonDataFromFile(filePath, snippet); err != nil {
+		return nil, err
+	}
+	return snippet, nil
 }
