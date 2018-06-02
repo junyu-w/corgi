@@ -33,10 +33,6 @@ func LoadSnippets(filePath string) (*Snippets, error) {
 }
 
 func (snippets *Snippets) Save() error {
-	// DEBUG
-	data, _ := json.Marshal(snippets)
-	fmt.Println(string(data))
-
 	if _, err := os.Stat(snippets.fileLoc); os.IsNotExist(err) {
 		return err
 	}
