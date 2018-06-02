@@ -48,7 +48,7 @@ func create(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	// add new sninppet to snippets and save
-	snippets.Snippets = append(snippets.Snippets, newSnippet)
+	snippets.AddSnippet(newSnippet)
 	if err = snippets.Save(); err != nil {
 		return err
 	}

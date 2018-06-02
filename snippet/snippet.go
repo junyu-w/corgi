@@ -13,7 +13,7 @@ import (
 type Snippet struct {
 	Title   string      `json:"title"`
 	Steps   []*StepInfo `json:"steps"`
-	FileLoc string      `json:"file_loc"`
+	fileLoc string
 }
 
 type StepInfo struct {
@@ -146,7 +146,7 @@ func (snippet *Snippet) AskQuestion(options ...interface{}) error {
 func (snippet *Snippet) Save(snippetsDir string) error {
 	fmt.Printf("Saving snippet %s... ", snippet.Title)
 	filePath := fmt.Sprintf("%s/%s.json", snippetsDir, strings.Replace(snippet.Title, " ", "_", -1))
-	snippet.FileLoc = filePath
+	snippet.fileLoc = filePath
 	data, err := json.Marshal(snippet)
 	if err != nil {
 		color.Red("Failed")

@@ -3,13 +3,19 @@ package snippet
 import (
 	"corgi/util"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 )
 
 type Snippets struct {
-	Snippets []*Snippet `json:"snippets"`
-	fileLoc  string     `json:"file_loc"`
+	Snippets []*jsonSnippet `json:"snippets"`
+	fileLoc  string
+}
+
+type jsonSnippet struct {
+	FileLoc string `json:"file_loc"`
+	Title   string `json:"title"`
 }
 
 func LoadSnippets(filePath string) (*Snippets, error) {
@@ -27,6 +33,10 @@ func LoadSnippets(filePath string) (*Snippets, error) {
 }
 
 func (snippets *Snippets) Save() error {
+	// DEBUG
+	data, _ := json.Marshal(snippets)
+	fmt.Println(string(data))
+
 	if _, err := os.Stat(snippets.fileLoc); os.IsNotExist(err) {
 		return err
 	}
@@ -38,4 +48,12 @@ func (snippets *Snippets) Save() error {
 		return err
 	}
 	return nil
+}
+
+func (snippets *Snippets) AddSnippet(snippet *Snippet) {
+	jsonSnippet := &jsonSnippet{
+		Title:   snippet.Title,
+		FileLoc: snippet.fileLoc,
+	}
+	snippets.Snippets = append(snippets.Snippets, jsonSnippet)
 }
