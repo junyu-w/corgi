@@ -84,32 +84,26 @@ func (step *StepInfo) AskQuestion(options ...interface{}) error {
 
 // ################### Snippet related code ############################
 
-func NewSnippet(title string, numCmds int) (*Snippet, error) {
+func NewSnippet(title string, cmds []string) (*Snippet, error) {
 	snippet := &Snippet{
 		Title: title,
 	}
-	if err := snippet.AskQuestion(numCmds); err != nil {
+	if err := snippet.AskQuestion(cmds); err != nil {
 		return nil, err
 	}
 	return snippet, nil
 }
 
 func (snippet *Snippet) AskQuestion(options ...interface{}) error {
-	// read commands from hist file
-	commands, err := ParseFileToStringArray(TempHistFile, BashCmdParser{})
-	if err != nil {
-		return err
-	}
 	// ask about each step
-	numCmdsSelected := options[0].(int)
-	useCmdAsDefault := numCmdsSelected != 0 && numCmdsSelected == len(commands)
+	initialDefaultCmds := options[0].([]string)
 	stepCount := 0
 	steps := make([]*StepInfo, 0)
 	for {
 		color.Yellow("Step %d:", stepCount+1)
 		var defaultCmd string
-		if useCmdAsDefault && stepCount < len(commands) {
-			defaultCmd = commands[stepCount]
+		if stepCount < len(initialDefaultCmds) {
+			defaultCmd = initialDefaultCmds[stepCount]
 		}
 		step := NewStepInfo(defaultCmd)
 		err := step.AskQuestion()

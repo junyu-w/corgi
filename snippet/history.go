@@ -61,7 +61,7 @@ func ParseFileToStringArray(filePath string, parser CommandParser) ([]string, er
 	return lines, nil
 }
 
-func ReadShellHistory(last int) ([]string, error) {
+func ReadShellHistory() ([]string, error) {
 	histFilePath, err := getHistoryFilePath()
 	if err != nil {
 		return nil, err
@@ -71,21 +71,10 @@ func ReadShellHistory(last int) ([]string, error) {
 		return nil, err
 	}
 	lines, err := ParseFileToStringArray(histFilePath, parser)
-	// determine history to look at
-	var startIdx int
-	if last == 0 {
-		startIdx = 0
-	} else {
-		startIdx = len(lines) - (last + 1)
-	}
-	return lines[startIdx : len(lines)-1], nil
+	return lines, nil
 }
 
-func SetUpHistFile(last int) error {
-	histCmds, err := ReadShellHistory(last)
-	if err != nil {
-		return err
-	}
+func SetUpHistFile(histCmds []string) error {
 	// write commands to temp history file
 	f, err := os.OpenFile(TempHistFile, os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {

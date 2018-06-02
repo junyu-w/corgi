@@ -18,12 +18,18 @@ var newCmd = &cobra.Command{
 }
 
 func create(cmd *cobra.Command, args []string) error {
-	err := snippet.SetUpHistFile(lastCmds)
+	// set up history
+	histCmds, err := snippet.ReadShellHistory()
 	if err != nil {
 		return err
 	}
+	if err = snippet.SetUpHistFile(histCmds); err != nil {
+		return err
+	}
 	defer snippet.RemoveHistFile()
-	newSnippet, err := snippet.NewSnippet(title, lastCmds)
+	// create snippet
+	initialDefaultCmds := histCmds[len(histCmds)-(lastCmds+1) : len(histCmds)-1]
+	newSnippet, err := snippet.NewSnippet(title, initialDefaultCmds)
 	if err != nil {
 		return err
 	}
