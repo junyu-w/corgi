@@ -4,7 +4,7 @@
 [[projects]]
   name = "github.com/chzyer/readline"
   packages = ["."]
-  revision = "62c6fe6193755f722b8b8788aa7357be55a50ff1"
+  revision = "f6d7a1f6fbf35bbf9beb80dc63c56a29dcfb759f"
   version = "v1.4"
 
 [[projects]]
@@ -70,6 +70,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4d3d5b4eaa5205d4d87da32faa8537cc02aa2a1de548437c6c6cdc5cdea35268"
+  inputs-digest = "95352d0f39142c136b62ea6dd7798a8e848740602b58192053650746ed77e4a0"
   solver-name = "gps-cdcl"
   solver-version = 1
