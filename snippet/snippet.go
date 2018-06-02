@@ -6,6 +6,7 @@ import (
 	"github.com/chzyer/readline"
 	"github.com/fatih/color"
 	"github.com/kataras/iris/core/errors"
+	"strings"
 )
 
 type Snippets struct {
@@ -49,6 +50,7 @@ func scan(prompt string, defaultInp string) (string, error) {
 		if err != nil {
 			break
 		}
+		line = strings.TrimSpace(line)
 		if line == "" {
 			continue
 		}
@@ -146,7 +148,7 @@ func (snippet *Snippet) AskQuestion(options ...interface{}) error {
 
 func (snippet *Snippet) Save() error {
 	// TODO: finish this
-	fmt.Println("Saving snippet")
+	fmt.Printf("Saving snippet %s...\n", snippet.Title)
 	jsonData, err := json.Marshal(snippet)
 	if err != nil {
 		return err
