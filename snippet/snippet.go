@@ -1,6 +1,7 @@
 package snippet
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/chzyer/readline"
 	"github.com/fatih/color"
@@ -103,7 +104,7 @@ func (snippet *Snippet) AskQuestion(options ...interface{}) error {
 	numCmdsSelected := options[0].(int)
 	useCmdAsDefault := numCmdsSelected != 0 && numCmdsSelected == len(commands)
 	stepCount := 0
-	steps := make([]*StepInfo, 10)
+	steps := make([]*StepInfo, 0)
 	for {
 		color.Yellow("Step %d:", stepCount+1)
 		var defaultCmd string
@@ -149,8 +150,13 @@ func (snippet *Snippet) AskQuestion(options ...interface{}) error {
 	return nil
 }
 
-func (Snippet *Snippet) Save() error {
+func (snippet *Snippet) Save() error {
 	// TODO: finish this
 	fmt.Println("Saving snippet")
+	jsonData, err := json.Marshal(snippet)
+	if err != nil {
+		return err
+	}
+	fmt.Println(string(jsonData))
 	return nil
 }
