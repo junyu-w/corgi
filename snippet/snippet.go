@@ -145,16 +145,17 @@ func (snippet *Snippet) AskQuestion(options ...interface{}) error {
 
 func (snippet *Snippet) Save(snippetsDir string) error {
 	fmt.Printf("Saving snippet %s... ", snippet.Title)
+	filePath := fmt.Sprintf("%s/%s.json", snippetsDir, snippet.Title)
+	snippet.FileLoc = filePath
 	data, err := json.Marshal(snippet)
 	if err != nil {
-		color.RedString("Failed")
+		color.Red("Failed")
 		return err
 	}
-	filePath := fmt.Sprintf("%s/%s.json", snippetsDir, snippet.Title)
 	if err = ioutil.WriteFile(filePath, data, 0644); err != nil {
-		color.RedString("Failed")
+		color.Red("Failed")
 		return err
 	}
-	color.GreenString("Success")
+	color.Green("Success")
 	return nil
 }

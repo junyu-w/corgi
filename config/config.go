@@ -1,6 +1,7 @@
 package config
 
 import (
+	"corgi/util"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -68,12 +69,8 @@ func Load() (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	data, err := ioutil.ReadFile(configFile)
-	if err != nil {
-		return nil, err
-	}
 	config := &Config{}
-	if err = json.Unmarshal(data, config); len(data) > 0 && err != nil {
+	if err = util.LoadJsonDataFromFile(configFile, config); err != nil {
 		return nil, err
 	}
 	// if config file has not content, initialize it with default

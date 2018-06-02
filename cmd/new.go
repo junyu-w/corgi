@@ -33,6 +33,11 @@ func create(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+	// Load snippets
+	snippets, err := snippet.LoadSnippets(conf.SnippetsFile)
+	if err != nil {
+		return err
+	}
 	// create snippet
 	initialDefaultCmds := histCmds[len(histCmds)-(lastCmds+1) : len(histCmds)-1]
 	newSnippet, err := snippet.NewSnippet(title, initialDefaultCmds)
@@ -40,6 +45,11 @@ func create(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	if err := newSnippet.Save(conf.SnippetsDir); err != nil {
+		return err
+	}
+	// add new sninppet to snippets and save
+	snippets.Snippets = append(snippets.Snippets, newSnippet)
+	if err = snippets.Save(); err != nil {
 		return err
 	}
 	return nil
