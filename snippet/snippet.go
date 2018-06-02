@@ -6,12 +6,9 @@ import (
 	"github.com/chzyer/readline"
 	"github.com/fatih/color"
 	"github.com/kataras/iris/core/errors"
+	"io/ioutil"
 	"strings"
 )
-
-type Snippets struct {
-	Snippets []Snippet `json:"snippets"`
-}
 
 type Snippet struct {
 	Title   string      `json:"title"`
@@ -146,13 +143,18 @@ func (snippet *Snippet) AskQuestion(options ...interface{}) error {
 	return nil
 }
 
-func (snippet *Snippet) Save() error {
-	// TODO: finish this
-	fmt.Printf("Saving snippet %s...\n", snippet.Title)
-	jsonData, err := json.Marshal(snippet)
+func (snippet *Snippet) Save(snippetsDir string) error {
+	fmt.Printf("Saving snippet %s... ", snippet.Title)
+	data, err := json.Marshal(snippet)
 	if err != nil {
+		color.RedString("Failed")
 		return err
 	}
-	fmt.Println(string(jsonData))
+	filePath := fmt.Sprintf("%s/%s.json", snippetsDir, snippet.Title)
+	if err = ioutil.WriteFile(filePath, data, 0644); err != nil {
+		color.RedString("Failed")
+		return err
+	}
+	color.GreenString("Success")
 	return nil
 }

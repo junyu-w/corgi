@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"corgi/config"
 	"corgi/snippet"
 	"github.com/spf13/cobra"
 )
@@ -27,13 +28,18 @@ func create(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	defer snippet.RemoveHistFile()
+	// Load config
+	conf, err := config.Load()
+	if err != nil {
+		return err
+	}
 	// create snippet
 	initialDefaultCmds := histCmds[len(histCmds)-(lastCmds+1) : len(histCmds)-1]
 	newSnippet, err := snippet.NewSnippet(title, initialDefaultCmds)
 	if err != nil {
 		return err
 	}
-	if err := newSnippet.Save(); err != nil {
+	if err := newSnippet.Save(conf.SnippetsDir); err != nil {
 		return err
 	}
 	return nil

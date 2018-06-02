@@ -39,7 +39,7 @@ func getHistoryFilePath() (string, error) {
 		shellType = SHELL_UNSUPPORTED
 		return "", errors.New("only Bash, Zsh are currently supported.")
 	}
-	if _, err := os.Stat(histFilePath); err != nil {
+	if _, err := os.Stat(histFilePath); os.IsNotExist(err) {
 		return "", err
 	}
 	return histFilePath, nil
@@ -76,7 +76,7 @@ func ReadShellHistory() ([]string, error) {
 
 func SetUpHistFile(histCmds []string) error {
 	// write commands to temp history file
-	f, err := os.OpenFile(TempHistFile, os.O_RDWR|os.O_CREATE, 0755)
+	f, err := os.OpenFile(TempHistFile, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
 		return err
 	}
