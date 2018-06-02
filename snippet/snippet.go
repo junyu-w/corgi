@@ -19,7 +19,7 @@ type Snippet struct {
 type StepInfo struct {
 	Command           string   `json:"command"`
 	Description       string   `json:"description,omitempty"`
-	executeConcurrent bool     `json:"execute_concurrent"`
+	ExecuteConcurrent bool     `json:"execute_concurrent"`
 	TemplateFields    []string `json:"template_fields"`
 }
 
