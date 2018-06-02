@@ -3,7 +3,6 @@ package snippet
 import (
 	"corgi/util"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"os"
 )
