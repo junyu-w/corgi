@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"corgi/snippet"
-	"fmt"
 	"github.com/spf13/cobra"
 )
 
@@ -19,12 +18,12 @@ var newCmd = &cobra.Command{
 }
 
 func create(cmd *cobra.Command, args []string) error {
-	hcmds, err := snippet.ReadShellHistory(lastCmds)
+	err := snippet.SetUpHistFile(lastCmds)
 	if err != nil {
 		return err
 	}
-	fmt.Println(hcmds)
-	newSnippet, err := snippet.NewSnippet(hcmds)
+	defer snippet.RemoveHistFile()
+	newSnippet, err := snippet.NewSnippet(title, lastCmds)
 	if err != nil {
 		return err
 	}
@@ -35,7 +34,7 @@ func create(cmd *cobra.Command, args []string) error {
 }
 
 func init() {
-	newCmd.Flags().IntVarP(&lastCmds, "last", "l", 1, "Select the number of history commands to look back")
+	newCmd.Flags().IntVarP(&lastCmds, "last", "l", 0, "The number of history commands to look back, they'll be the default for each step. If 0 or unspecified, each step will not have a default.")
 	newCmd.Flags().BoolVar(&withoutDescription, "without-description", false, "Skip entering description (use command itself as default)")
 	newCmd.Flags().StringVarP(&title, "title", "t", "", "Title of the snippet")
 	rootCmd.AddCommand(newCmd)

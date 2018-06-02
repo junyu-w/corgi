@@ -17,6 +17,7 @@ const (
 )
 
 var shellType string
+var TempHistFile = "/tmp/corgi.hist"
 
 func getHistoryFilePath() (string, error) {
 	histFilePath, suc := os.LookupEnv("HISTFILE")
@@ -44,22 +45,12 @@ func getHistoryFilePath() (string, error) {
 	return histFilePath, nil
 }
 
-func ReadShellHistory(last int) ([]string, error) {
-	last += 1 // we want at least the command before the corgi command itself
-	histFilePath, err := getHistoryFilePath()
-	if err != nil {
-		return nil, err
-	}
-	file, err := os.Open(histFilePath)
+func ParseFileToStringArray(filePath string, parser CommandParser) ([]string, error) {
+	file, err := os.Open(filePath)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
-
-	parser, err := GetCmdParser(shellType)
-	if err != nil {
-		return nil, err
-	}
 	var lines []string
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -67,5 +58,52 @@ func ReadShellHistory(last int) ([]string, error) {
 		parsedLine := parser.Parse(line)
 		lines = append(lines, parsedLine)
 	}
-	return lines[len(lines)-last : len(lines)-1], nil
+	return lines, nil
+}
+
+func ReadShellHistory(last int) ([]string, error) {
+	histFilePath, err := getHistoryFilePath()
+	if err != nil {
+		return nil, err
+	}
+	parser, err := GetCmdParser(shellType)
+	if err != nil {
+		return nil, err
+	}
+	lines, err := ParseFileToStringArray(histFilePath, parser)
+	// determine history to look at
+	var startIdx int
+	if last == 0 {
+		startIdx = 0
+	} else {
+		startIdx = len(lines) - (last + 1)
+	}
+	return lines[startIdx : len(lines)-1], nil
+}
+
+func SetUpHistFile(last int) error {
+	histCmds, err := ReadShellHistory(last)
+	if err != nil {
+		return err
+	}
+	// write commands to temp history file
+	f, err := os.OpenFile(TempHistFile, os.O_RDWR|os.O_CREATE, 0755)
+	if err != nil {
+		return err
+	}
+
+	defer f.Close()
+	for _, cmd := range histCmds {
+		if _, err := f.WriteString(fmt.Sprintf("%s\n", cmd)); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func RemoveHistFile() error {
+	if err := os.Remove(TempHistFile); err != nil {
+		return err
+	}
+	return nil
 }

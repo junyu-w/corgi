@@ -5,7 +5,6 @@ import (
 	"github.com/chzyer/readline"
 	"github.com/fatih/color"
 	"github.com/kataras/iris/core/errors"
-	"os"
 )
 
 type Snippets struct {
@@ -19,33 +18,21 @@ type Snippet struct {
 }
 
 type StepInfo struct {
-	Command        string   `json:"command"`
-	Description    string   `json:"description,omitempty"`
-	TemplateFields []string `json:"template_fields"`
+	Command           string   `json:"command"`
+	Description       string   `json:"description,omitempty"`
+	executeConcurrent bool     `json:"execute_concurrent"`
+	TemplateFields    []string `json:"template_fields"`
 }
 
-var tempHistFile = "/tmp/corgi.hist"
-
-func setUpHistFile(histCmds []string) error {
-	// write commands to temp history file
-	f, err := os.OpenFile(tempHistFile, os.O_RDWR|os.O_CREATE, 0755)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-	for _, cmd := range histCmds {
-		if _, err := f.WriteString(cmd); err != nil {
-			return err
-		}
-	}
-	return nil
+type Answerable interface {
+	AskQuestion(options ...interface{}) error
 }
 
 func scan(prompt string, defaultInp string) (string, error) {
 	// create config
 	config := &readline.Config{
 		Prompt:            prompt,
-		HistoryFile:       tempHistFile,
+		HistoryFile:       TempHistFile,
 		HistorySearchFold: true,
 		InterruptPrompt:   "^C",
 		EOFPrompt:         "exit",
@@ -77,7 +64,7 @@ func NewStepInfo(command string) *StepInfo {
 	}
 }
 
-func (step *StepInfo) askQuestion() error {
+func (step *StepInfo) AskQuestion(options ...interface{}) error {
 	// set command
 	cmd, err := scan(color.GreenString("Command: "), step.Command)
 	if err != nil {
@@ -96,40 +83,69 @@ func (step *StepInfo) askQuestion() error {
 
 // ################### Snippet related code ############################
 
-func NewSnippet(commands []string) (*Snippet, error) {
-	snippet := &Snippet{}
-	if err := snippet.AskQuestions(commands); err != nil {
+func NewSnippet(title string, numCmds int) (*Snippet, error) {
+	snippet := &Snippet{
+		Title: title,
+	}
+	if err := snippet.AskQuestion(numCmds); err != nil {
 		return nil, err
 	}
 	return snippet, nil
 }
 
-func (snippet *Snippet) AskQuestions(commands []string) error {
-	// TODO: use full command history
-	// set up history file
-	if err := setUpHistFile(commands); err != nil {
+func (snippet *Snippet) AskQuestion(options ...interface{}) error {
+	// read commands from hist file
+	commands, err := ParseFileToStringArray(TempHistFile, BashCmdParser{})
+	if err != nil {
 		return err
 	}
 	// ask about each step
-	steps := make([]*StepInfo, len(commands))
-	// TODO: make step adding process interactive - asking if user want to add a step
-	for idx, cmd := range commands {
-		color.Yellow("Step %d:", idx+1)
-		step := NewStepInfo(cmd)
-		err := step.askQuestion()
+	numCmdsSelected := options[0].(int)
+	useCmdAsDefault := numCmdsSelected != 0 && numCmdsSelected == len(commands)
+	stepCount := 0
+	steps := make([]*StepInfo, 10)
+	for {
+		color.Yellow("Step %d:", stepCount+1)
+		var defaultCmd string
+		if useCmdAsDefault && stepCount < len(commands) {
+			defaultCmd = commands[stepCount]
+		}
+		step := NewStepInfo(defaultCmd)
+		err := step.AskQuestion()
 		if err != nil {
 			return err
 		}
 		steps = append(steps, step)
-		fmt.Println("")
+		var addOneMoreStep bool
+		for {
+			addStepInp, err := scan(color.RedString("Add another step? (y/n): "), "")
+			if err != nil {
+				return err
+			}
+			if addStepInp == "y" {
+				addOneMoreStep = true
+			} else if addStepInp == "n" {
+				addOneMoreStep = false
+			} else {
+				continue
+			}
+			break
+		}
+		fmt.Print("\n")
+		if !addOneMoreStep {
+			break
+		}
+		stepCount++
 	}
 	snippet.Steps = steps
-	// ask about title
-	title, err := scan(color.YellowString("Title: "), "")
-	if err != nil {
-		return err
+	// ask about title if not set
+	if snippet.Title == "" {
+		title, err := scan(color.YellowString("Title: "), "")
+		if err != nil {
+			return err
+		}
+		snippet.Title = title
 	}
-	snippet.Title = title
 	return nil
 }
 
