@@ -145,7 +145,7 @@ func (snippet *Snippet) AskQuestion(options ...interface{}) error {
 
 func (snippet *Snippet) Save(snippetsDir string) error {
 	fmt.Printf("Saving snippet %s... ", snippet.Title)
-	filePath := fmt.Sprintf("%s/%s.json", snippetsDir, snippet.Title)
+	filePath := fmt.Sprintf("%s/%s.json", snippetsDir, strings.Replace(snippet.Title, " ", "_", -1))
 	snippet.FileLoc = filePath
 	data, err := json.Marshal(snippet)
 	if err != nil {
