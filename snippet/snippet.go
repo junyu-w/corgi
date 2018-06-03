@@ -8,6 +8,8 @@ import (
 	"github.com/fatih/color"
 	"github.com/kataras/iris/core/errors"
 	"io/ioutil"
+	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -79,6 +81,21 @@ func (step *StepInfo) AskQuestion(options ...interface{}) error {
 		return err
 	}
 	step.Description = description
+	return nil
+}
+
+func (step *StepInfo) Execute() error {
+	fmt.Printf("%s: %s\n", color.GreenString("Running"), color.YellowString(step.Command))
+	cmdName := strings.Split(step.Command, " ")[0]
+	cmdArgs := strings.Split(step.Command, " ")[1:]
+	cmd := exec.Command(cmdName, cmdArgs...)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	if err := cmd.Run(); err != nil {
+		color.Red("[ Failed ]")
+		return err
+	}
+	color.Green("[ Success ]")
 	return nil
 }
 
@@ -163,8 +180,14 @@ func (snippet *Snippet) Save(snippetsDir string) error {
 }
 
 func (snippet *Snippet) Execute() error {
-	color.Green("Start executing snippet \"%s\"...", snippet.Title)
-	// TODO: finish execution part
+	fmt.Println(color.GreenString("Start executing snippet \"%s\"...\n", snippet.Title))
+	for idx, step := range snippet.Steps {
+		fmt.Printf("%s: %s\n", color.GreenString("Step %d", idx+1), color.YellowString(step.Description))
+		if err := step.Execute(); err != nil {
+			return err
+		}
+		fmt.Println("")
+	}
 	return nil
 }
 
