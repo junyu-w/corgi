@@ -6,18 +6,21 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path"
 )
 
 type Config struct {
 	SnippetsFile string `json:"snippets_file"`
 	SnippetsDir  string `json:"snippets_dir"`
+	Editor       string `json:"editor"`
 }
 
 const (
 	DEFAULT_CONFIG_FILE   = ".corgi/corgi_conf.json"
 	DEFAULT_SNIPPETS_DIR  = ".corgi/snippets"
 	DEFAULT_SNIPPETS_FILE = ".corgi/snippets.json"
+	DEFAULT_EDITOR        = "vi"
 )
 
 func getOrCreatePath(loc string, perm os.FileMode, isDir bool) error {
@@ -64,6 +67,18 @@ func GetDefaultSnippetsFile() (string, error) {
 	return defaultSnippetsFile, nil
 }
 
+func GetDefaultEditor() (string, error) {
+	editorPath, suc := os.LookupEnv("EDITOR")
+	if !suc {
+		editorPath, err := exec.LookPath(DEFAULT_EDITOR)
+		if err != nil {
+			return "", fmt.Errorf("could not find %s (default) in $PATH, update your editor choice with \"corgi configure --editor <path to your editor>\"", DEFAULT_EDITOR)
+		}
+		return editorPath, nil
+	}
+	return editorPath, nil
+}
+
 func Load() (*Config, error) {
 	configFile, err := GetDefaultConfigFile()
 	if err != nil {
@@ -74,17 +89,26 @@ func Load() (*Config, error) {
 		return nil, err
 	}
 	// if config file has not content, initialize it with default
-	if config.SnippetsFile == "" && config.SnippetsDir == "" {
+	if config.SnippetsFile == "" && config.SnippetsDir == "" && config.Editor == "" {
+		// set default snippets file
 		snippetsFile, err := GetDefaultSnippetsFile()
 		if err != nil {
 			return nil, err
 		}
 		config.SnippetsFile = snippetsFile
+		// set default snippets dir
 		snippetsDir, err := GetDefaultSnippetsDir()
 		if err != nil {
 			return nil, err
 		}
 		config.SnippetsDir = snippetsDir
+		// set default editor
+		editor, err := GetDefaultEditor()
+		if err != nil {
+			return nil, err
+		}
+		config.Editor = editor
+		// save
 		config.Save()
 	}
 	return config, nil
