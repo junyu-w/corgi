@@ -24,6 +24,8 @@ type TemplateField struct {
 	Value     string `json:"default_value"`
 }
 
+type TemplateFieldMap map[string]*TemplateField
+
 func NewStepInfo(command string) *StepInfo {
 	return &StepInfo{
 		Command: command,
@@ -49,12 +51,12 @@ func (step *StepInfo) AskQuestion(options ...interface{}) error {
 // TODO: add concurrent execution
 func (step *StepInfo) Execute() error {
 	// fill in templates
-	templateFields := ParseTemplateFields(step.Command)
-	for _, t := range templateFields {
+	templateFieldsMap := ParseTemplateFields(step.Command)
+	for _, t := range templateFieldsMap {
 		t.AskQuestion()
 	}
 	// replace params in command with input values
-	command := FillTemplates(step.Command, templateFields)
+	command := FillTemplates(step.Command, &templateFieldsMap)
 	// execute command
 	fmt.Printf("%s: %s\n", color.GreenString("Running"), color.YellowString(command))
 	commandsList := strings.Split(command, "&&")
@@ -88,28 +90,26 @@ func getParamNameAndValue(p string) (string, string) {
 	return field, val
 }
 
-func ParseTemplateFields(c string) []*TemplateField {
+func ParseTemplateFields(c string) TemplateFieldMap {
 	re := regexp.MustCompile(TemplateParamsRegex)
 	params := re.FindAllString(c, -1)
-	templateFields := make([]*TemplateField, len(params), len(params))
-	for idx, p := range params {
+	tfMap := TemplateFieldMap{}
+	for _, p := range params {
 		field, defaultVal := getParamNameAndValue(p)
-		templateFields[idx] = &TemplateField{
+		tfMap.AddTemplateField(&TemplateField{
 			FieldName: field,
 			Value:     defaultVal,
-		}
+		})
 	}
-	return templateFields
+	return tfMap
 }
 
-func FillTemplates(c string, ts []*TemplateField) string {
+func FillTemplates(c string, tfMap *TemplateFieldMap) string {
 	re := regexp.MustCompile(TemplateParamsRegex)
 	filledCmd := re.ReplaceAllStringFunc(c, func(sub string) string {
 		field, _ := getParamNameAndValue(sub)
-		for _, t := range ts {
-			if t.FieldName == field {
-				return t.Value
-			}
+		if t, ok := (*tfMap)[field]; ok {
+			return t.Value
 		}
 		log.Panic(color.RedString("Couldn't find field with name %s", field))
 		return ""
@@ -117,11 +117,22 @@ func FillTemplates(c string, ts []*TemplateField) string {
 	return filledCmd
 }
 
-func (t *TemplateField) AskQuestion(options ...interface{}) error {
-	val, err := util.Scan(color.CyanString("Enter value for <%s>: ", t.FieldName), t.Value, "")
+func (tf *TemplateField) AskQuestion(options ...interface{}) error {
+	val, err := util.Scan(color.CyanString("Enter value for <%s>: ", tf.FieldName), tf.Value, "")
 	if err != nil {
 		return err
 	}
-	t.Value = val
+	tf.Value = val
 	return nil
+}
+
+func (tfMap TemplateFieldMap) AddTemplateField(t *TemplateField) {
+	if _, ok := tfMap[t.FieldName]; ok {
+		// take the latest non-empty default value
+		if t.Value != "" {
+			tfMap[t.FieldName] = t
+		}
+	} else {
+		tfMap[t.FieldName] = t
+	}
 }
