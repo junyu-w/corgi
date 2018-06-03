@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/kataras/iris/core/errors"
+	"errors"
 	"github.com/spf13/cobra"
 )
 

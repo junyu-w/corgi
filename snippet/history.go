@@ -2,9 +2,9 @@ package snippet
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"github.com/fatih/color"
-	"github.com/kataras/iris/core/errors"
 	"github.com/mitchellh/go-homedir"
 	"os"
 	"strings"
