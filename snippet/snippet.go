@@ -95,11 +95,9 @@ func (step *StepInfo) Execute() error {
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		if err := cmd.Run(); err != nil {
-			color.Red("[ Failed ]")
 			return err
 		}
 	}
-	color.Green("[ Success ]")
 	return nil
 }
 
@@ -186,10 +184,13 @@ func (snippet *Snippet) Save(snippetsDir string) error {
 func (snippet *Snippet) Execute() error {
 	fmt.Println(color.GreenString("Start executing snippet \"%s\"...\n", snippet.Title))
 	for idx, step := range snippet.Steps {
-		fmt.Printf("%s: %s\n", color.GreenString("Step %d", idx+1), color.YellowString(step.Description))
+		stepCount := idx + 1
+		fmt.Printf("%s: %s\n", color.GreenString("Step %d", stepCount), color.YellowString(step.Description))
 		if err := step.Execute(); err != nil {
+			color.Red("Step %d - Failed", stepCount)
 			return err
 		}
+		color.Green("Step %d - Success", stepCount)
 		fmt.Println("")
 	}
 	return nil
