@@ -2,7 +2,10 @@ package util
 
 import (
 	"encoding/json"
+	"errors"
+	"github.com/chzyer/readline"
 	"io/ioutil"
+	"strings"
 )
 
 func LoadJsonDataFromFile(filePath string, object interface{}) error {
@@ -14,4 +17,33 @@ func LoadJsonDataFromFile(filePath string, object interface{}) error {
 		return err
 	}
 	return nil
+}
+
+func Scan(prompt string, defaultInp string, historyFile string) (string, error) {
+	// create config
+	config := &readline.Config{
+		Prompt:            prompt,
+		HistoryFile:       historyFile,
+		HistorySearchFold: true,
+		InterruptPrompt:   "^C",
+		EOFPrompt:         "exit",
+	}
+	rl, err := readline.NewEx(config)
+	if err != nil {
+		return "", err
+	}
+	defer rl.Close()
+
+	for {
+		line, err := rl.ReadlineWithDefault(defaultInp)
+		if err != nil {
+			break
+		}
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+		return line, nil
+	}
+	return "", errors.New("cancelled")
 }
