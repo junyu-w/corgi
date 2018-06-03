@@ -3,6 +3,7 @@ package snippet
 import (
 	"corgi/util"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 )
@@ -51,4 +52,17 @@ func (snippets *Snippets) AddSnippet(snippet *Snippet) {
 		FileLoc: snippet.fileLoc,
 	}
 	snippets.Snippets = append(snippets.Snippets, jsonSnippet)
+}
+
+func (snippets *Snippets) FindSnippet(title string) (*Snippet, error) {
+	for _, snp := range snippets.Snippets {
+		if snp.Title == title {
+			s, err := LoadSnippet(snp.FileLoc)
+			if err != nil {
+				return nil, err
+			}
+			return s, nil
+		}
+	}
+	return nil, fmt.Errorf("could not find snippet with name: %s", title)
 }

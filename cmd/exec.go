@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"corgi/snippet"
 	"github.com/kataras/iris/core/errors"
 	"github.com/spf13/cobra"
 )
@@ -25,13 +24,9 @@ func exec(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	// find snippet corresponds to title
-	var s *snippet.Snippet
-	for _, snp := range snippets.Snippets {
-		if snp.Title == execTitle {
-			if s, err = snippet.LoadSnippet(snp.FileLoc); err != nil {
-				return err
-			}
-		}
+	s, err := snippets.FindSnippet(execTitle)
+	if err != nil {
+		return err
 	}
 	if err = s.Execute(); err != nil {
 		return err
