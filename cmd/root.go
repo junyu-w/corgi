@@ -9,7 +9,7 @@ var rootCmd = &cobra.Command{
 	Use:   "corgi",
 	Short: "Corgi is a smart dog that helps you organize your command flow for future usage",
 	Run: func(cmd *cobra.Command, args []string) {
-		// Do stuff here
+		cmd.Help()
 	},
 }
 
