@@ -6,14 +6,20 @@ import (
 	"github.com/fatih/color"
 	"os"
 	"os/exec"
+	"regexp"
 	"strings"
 )
 
 type StepInfo struct {
-	Command           string   `json:"command"`
-	Description       string   `json:"description,omitempty"`
-	ExecuteConcurrent bool     `json:"execute_concurrent"`
-	TemplateFields    []string `json:"template_fields"`
+	Command           string `json:"command"`
+	Description       string `json:"description,omitempty"`
+	ExecuteConcurrent bool   `json:"execute_concurrent"`
+	templateFields    []*TemplateField
+}
+
+type TemplateField struct {
+	FieldName    string `json:"field_name"`
+	DefaultValue string `json:"default_value"`
 }
 
 func NewStepInfo(command string) *StepInfo {
@@ -28,7 +34,7 @@ func (step *StepInfo) AskQuestion(options ...interface{}) error {
 	if err != nil {
 		return err
 	}
-	// TODO: read template from command
+	step.templateFields = ParseTemplateFields(cmd)
 	step.Command = cmd
 	// set description
 	description, err := util.Scan(color.GreenString("Description: "), "", TempHistFile)
@@ -39,6 +45,7 @@ func (step *StepInfo) AskQuestion(options ...interface{}) error {
 	return nil
 }
 
+// TODO: add concurrent execution
 func (step *StepInfo) Execute() error {
 	fmt.Printf("%s: %s\n", color.GreenString("Running"), color.YellowString(step.Command))
 	commandsList := strings.Split(step.Command, "&&")
@@ -54,4 +61,27 @@ func (step *StepInfo) Execute() error {
 		}
 	}
 	return nil
+}
+
+func ParseTemplateFields(c string) []*TemplateField {
+	re := regexp.MustCompile(`<([^(<>|\s)]+)>`)
+	params := re.FindAllString(c, -1)
+	templateFields := make([]*TemplateField, len(params), len(params))
+	for idx, p := range params {
+		// I'm doing this cuz I suck at building regex
+		p = p[1 : len(p)-1]
+		// fetch field and default value (if there's any)
+		var field, defaultVal string
+		if strings.Contains(p, "=") {
+			field = strings.Split(p, "=")[0]
+			defaultVal = strings.Split(p, "=")[1]
+		} else {
+			field = p
+		}
+		templateFields[idx] = &TemplateField{
+			FieldName:    field,
+			DefaultValue: defaultVal,
+		}
+	}
+	return templateFields
 }

@@ -121,6 +121,10 @@ func LoadSnippet(filePath string) (*Snippet, error) {
 	if err := util.LoadJsonDataFromFile(filePath, snippet); err != nil {
 		return nil, err
 	}
+	// parse template field
+	for _, step := range snippet.Steps {
+		step.templateFields = ParseTemplateFields(step.Command)
+	}
 	snippet.fileLoc = filePath
 	return snippet, nil
 }
