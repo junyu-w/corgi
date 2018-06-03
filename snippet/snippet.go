@@ -86,14 +86,18 @@ func (step *StepInfo) AskQuestion(options ...interface{}) error {
 
 func (step *StepInfo) Execute() error {
 	fmt.Printf("%s: %s\n", color.GreenString("Running"), color.YellowString(step.Command))
-	cmdName := strings.Split(step.Command, " ")[0]
-	cmdArgs := strings.Split(step.Command, " ")[1:]
-	cmd := exec.Command(cmdName, cmdArgs...)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	if err := cmd.Run(); err != nil {
-		color.Red("[ Failed ]")
-		return err
+	commandsList := strings.Split(step.Command, "&&")
+	for _, c := range commandsList {
+		c = strings.TrimSpace(c)
+		cmdName := strings.Split(c, " ")[0]
+		cmdArgs := strings.Split(c, " ")[1:]
+		cmd := exec.Command(cmdName, cmdArgs...)
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+		if err := cmd.Run(); err != nil {
+			color.Red("[ Failed ]")
+			return err
+		}
 	}
 	color.Green("[ Success ]")
 	return nil
