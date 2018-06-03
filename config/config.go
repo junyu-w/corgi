@@ -20,7 +20,7 @@ const (
 	DEFAULT_CONFIG_FILE   = ".corgi/corgi_conf.json"
 	DEFAULT_SNIPPETS_DIR  = ".corgi/snippets"
 	DEFAULT_SNIPPETS_FILE = ".corgi/snippets.json"
-	DEFAULT_EDITOR        = "vi"
+	DEFAULT_EDITOR        = "vim"
 )
 
 func getOrCreatePath(loc string, perm os.FileMode, isDir bool) error {

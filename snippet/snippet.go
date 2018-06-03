@@ -191,10 +191,15 @@ func (snippet *Snippet) Execute() error {
 	return nil
 }
 
+func (snippet *Snippet) GetFilePath() string {
+	return snippet.fileLoc
+}
+
 func LoadSnippet(filePath string) (*Snippet, error) {
 	snippet := &Snippet{}
 	if err := util.LoadJsonDataFromFile(filePath, snippet); err != nil {
 		return nil, err
 	}
+	snippet.fileLoc = filePath
 	return snippet, nil
 }

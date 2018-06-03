@@ -8,12 +8,12 @@ import (
 var execCmd = &cobra.Command{
 	Use:   "exec",
 	Short: "Execute a snippet",
-	RunE:  exec,
+	RunE:  execute,
 }
 
 var execTitle string
 
-func exec(cmd *cobra.Command, args []string) error {
+func execute(cmd *cobra.Command, args []string) error {
 	if execTitle == "" {
 		// TODO: launch fzf search
 		return errors.New("must specify --title to execute command")
