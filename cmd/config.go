@@ -1,0 +1,30 @@
+package cmd
+
+import "github.com/spf13/cobra"
+
+var configCmd = &cobra.Command{
+	Use:   "config",
+	Short: "Update corgi configuration",
+	RunE:  configure,
+}
+
+var editor string
+
+func configure(cmd *cobra.Command, args []string) error {
+	conf, _, err := loadConfigAndSnippets()
+	if err != nil {
+		return err
+	}
+	if editor != "" {
+		conf.Editor = editor
+		if err := conf.Save(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func init() {
+	configCmd.Flags().StringVar(&editor, "editor", "", "Select the text editor you would like to use to edit snippet")
+	rootCmd.AddCommand(configCmd)
+}
