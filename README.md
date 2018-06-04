@@ -5,9 +5,10 @@ Corgi is a command-line tool that helps with your repetitive command usages by o
   
 ## Installation  
 Since this project is still in its very early phase, installation via package managers like `brew` or `apt-get` is not supported. Here are the steps to follow if you would like to try it out:
-1. Download the latest package from release tab
-2. Create a soft link of the `corgi` executable to your local `bin` folder  - (if you are on Mac, you can use `ln -s ./corgi /usr/local/bin/corgi`)
-3. Start `Corgi`ing
+1. Download the latest `corgi` executable from releases tab
+2. `chmod a+x ./corgi` to give execution permission to all users & groups
+3. Create a soft link of the `corgi` executable to your local `bin` folder  - (if you are on Mac, you can use `ln -s $(pwd)/corgi /usr/local/bin/corgi`)
+4. Start `Corgi`ing
   
 ## Features 
 To view usage of a specific action, run `corgi <action> --help`  
