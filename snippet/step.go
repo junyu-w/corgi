@@ -59,15 +59,11 @@ func (step *StepInfo) Execute() error {
 	command := FillTemplates(step.Command, &templateFieldsMap)
 	// execute command
 	fmt.Printf("%s: %s\n", color.GreenString("Running"), color.YellowString(command))
-	commandsList := strings.Split(command, "&&")
-	for _, c := range commandsList {
-		c = strings.TrimSpace(c)
-		cmd := exec.Command("sh", "-c", c)
-		cmd.Stdin = os.Stdin
-		cmd.Stdout = os.Stdout
-		if err := cmd.Run(); err != nil {
-			return err
-		}
+	cmd := exec.Command("sh", "-c", strings.TrimSpace(command))
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	if err := cmd.Run(); err != nil {
+		return err
 	}
 	return nil
 }
