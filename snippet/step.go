@@ -62,9 +62,7 @@ func (step *StepInfo) Execute() error {
 	commandsList := strings.Split(command, "&&")
 	for _, c := range commandsList {
 		c = strings.TrimSpace(c)
-		cmdName := strings.Split(c, " ")[0]
-		cmdArgs := strings.Split(c, " ")[1:]
-		cmd := exec.Command(cmdName, cmdArgs...)
+		cmd := exec.Command("sh", "-c", c)
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		if err := cmd.Run(); err != nil {
