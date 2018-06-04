@@ -1,7 +1,17 @@
 
-# Corgi  
-  
-Corgi is a command-line tool that helps with your repetitive command usages by organizing them into reusable snippet. See usage by simply running `corgi` or `corgi --help` 
+# Corgi: CLI workflow manager
+
+[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/DrakeW/corgi/blob/master/LICENSE)
+
+Corgi is a command-line tool that helps with your repetitive command usages by organizing them into reusable snippet. See usage by simply running `corgi` or `corgi --help`
+
+## Examples
+
+Create a new snippet to automate the commands you run repetitively
+<img src="images/corgi-new.gif" width="700">
+
+Execute an existing snippet knowing what command is being run and its output
+<img src="images/corgi-exec.gif" width="700">
   
 ## Installation  
 Since this project is still in its very early phase, installation via package managers like `brew` or `apt-get` is not supported. Here are the steps to follow if you would like to try it out:
