@@ -22,10 +22,10 @@ If you would like to quickly combine the last couple commands you just executed 
 ```  
 corgi new --last <number of commands to look back>  
 ```  
-Furthermore, you could also save a command template (with or without default value) as part of the snippet, for example:  
+Furthermore, you could also save a command template (with or without default value) as part of the snippet and reuse the same parameter, for example:  
 ```  
-ssh -i <aws-key-file> <user=ec2-user>@<ec2-instance-address>  
-```  
+tar -xzf <project>.tgz && scp <project> <user=ec2-user>@<ec2-instance-address>:~/
+```
 And you can enter the values for those parameters when the snippet executes.  
   
 ### List snippets  

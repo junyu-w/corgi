@@ -112,7 +112,7 @@ func FillTemplates(c string, tfMap *TemplateFieldMap) string {
 }
 
 func (tf *TemplateField) AskQuestion(options ...interface{}) error {
-	val, err := util.Scan(color.CyanString("Enter value for <%s>: ", tf.FieldName), tf.Value, "")
+	val, err := util.Scan(color.GreenString("Enter value for <%s>: ", tf.FieldName), tf.Value, "")
 	if err != nil {
 		return err
 	}

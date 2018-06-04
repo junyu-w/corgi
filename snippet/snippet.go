@@ -86,11 +86,11 @@ func (snippet *Snippet) Save(snippetsDir string) error {
 	snippet.fileLoc = filePath
 	data, err := json.Marshal(snippet)
 	if err != nil {
-		color.Red("Failed")
+		color.Red("Failure")
 		return err
 	}
 	if err = ioutil.WriteFile(filePath, data, 0644); err != nil {
-		color.Red("Failed")
+		color.Red("Failure")
 		return err
 	}
 	color.Green("Success")
@@ -103,10 +103,10 @@ func (snippet *Snippet) Execute() error {
 		stepCount := idx + 1
 		fmt.Printf("%s: %s\n", color.GreenString("Step %d", stepCount), color.YellowString(step.Description))
 		if err := step.Execute(); err != nil {
-			color.Red("Step %d - Failed", stepCount)
+			color.Red("[ Failure ]")
 			return err
 		}
-		color.Green("Step %d - Success", stepCount)
+		color.Green("[ Success ]")
 		fmt.Println("")
 	}
 	return nil
