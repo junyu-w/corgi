@@ -62,6 +62,7 @@ func (step *StepInfo) Execute() error {
 	cmd := exec.Command("sh", "-c", strings.TrimSpace(command))
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stdout
 	if err := cmd.Run(); err != nil {
 		return err
 	}
