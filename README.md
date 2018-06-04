@@ -1,5 +1,5 @@
 
-# Corgi: CLI workflow manager
+# Corgi - CLI workflow manager
 
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/DrakeW/corgi/blob/master/LICENSE)
 
