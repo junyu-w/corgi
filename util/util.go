@@ -8,6 +8,11 @@ import (
 	"strings"
 )
 
+const (
+	JSON_MARSHAL_PREFIX = ""
+	JSON_MARSHAL_INDENT = "  "
+)
+
 func LoadJsonDataFromFile(filePath string, object interface{}) error {
 	data, err := ioutil.ReadFile(filePath)
 	if err != nil {

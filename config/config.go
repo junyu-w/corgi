@@ -120,7 +120,7 @@ func (c *Config) Save() error {
 	if err != nil {
 		return err
 	}
-	data, err := json.Marshal(c)
+	data, err := json.MarshalIndent(c, util.JSON_MARSHAL_PREFIX, util.JSON_MARSHAL_INDENT)
 	if err != nil {
 		return err
 	}

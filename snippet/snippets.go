@@ -36,7 +36,7 @@ func (sm *SnippetsMeta) Save() error {
 	if _, err := os.Stat(sm.fileLoc); os.IsNotExist(err) {
 		return err
 	}
-	data, err := json.Marshal(sm)
+	data, err := json.MarshalIndent(sm, util.JSON_MARSHAL_PREFIX, util.JSON_MARSHAL_INDENT)
 	if err != nil {
 		return err
 	}

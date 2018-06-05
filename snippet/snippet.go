@@ -103,7 +103,7 @@ func (snippet *Snippet) Export(outputPath string) error {
 }
 
 func (snippet *Snippet) writeToFile(filePath string) error {
-	data, err := json.Marshal(snippet)
+	data, err := json.MarshalIndent(snippet, util.JSON_MARSHAL_PREFIX, util.JSON_MARSHAL_INDENT)
 	if err != nil {
 		return err
 	}
