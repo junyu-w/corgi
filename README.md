@@ -5,7 +5,7 @@
 
 Corgi is a command-line tool that helps with your repetitive command usages by organizing them into reusable snippet. See usage by simply running `corgi` or `corgi --help`
 
-Current version: **v0.1.2-alpha**
+Current version: **v0.2.0-alpha**
 ## Examples
 
 Create a new snippet to automate the commands you run repetitively
