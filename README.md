@@ -13,6 +13,20 @@ Create a new snippet to automate the commands you run repetitively
 
 Execute an existing snippet knowing what command is being run and its output
 <img src="images/corgi-exec.gif" width="700">
+
+# Table of Contents
+
+- [Installation](#installation)
+- [Features](#features)
+    - [Create a snippet](#create-a-snippet)
+    - [List snippets](#list-snippets)
+    - [Describe a snippet](#describe-a-snippet)
+    - [Execute a snippet](#execute-a-snippet)
+    - [Edit a snippet](#edit-a-snippet)
+    - [Share snippets](#share-snippets)
+    - [Configure corgi](#configure-corgi)
+- [Roadmap](#roadmap)
+- [Note](#note)
   
 ## Installation  
 Since this project is still in its very early phase, installation via package managers like `brew` or `apt-get` is not supported. Here are the steps to follow if you would like to try it out:
@@ -25,7 +39,7 @@ Since this project is still in its very early phase, installation via package ma
 ## Features 
 To view usage of a specific action, run `corgi <action> --help`  
   
-### Create a snippet (`corgi new --help`)
+### Create a snippet
 corgi provides an interactive CLI interface to create snippet, and you can start by running  
 ```  
 corgi new  
@@ -69,10 +83,10 @@ corgi edit <title of the snippet>
 ```  
 You'll be able to edit the snippet json file directly with your preferred editor (configurable via `corgi config` command, details see below)
 
-### Import/Export a snippet
-If someone shares his/her snippet json file with you, you can import it by running
+### Share snippets
+If someone shares his/her snippet json file(s) with you, you can import it by running
 ```
-corgi import <snippet json file>
+corgi import <snippet json file 1> [<snippet json file 2>...]
 ```
 And similarly, if you already have a workflow defined in a snippet, you can easily share it by exporting via
 ```
@@ -80,7 +94,7 @@ corgi export <title of the snippet> [-o <output file path>]
 ```
 and send the json file to another person
   
-### Configure CLI  
+### Configure `corgi` 
 Currently the only editable option is your text editor choice (default is `vim`), to configure the corgi CLI, run  
 ```  
 corgi config --editor <editor of your choice>  
