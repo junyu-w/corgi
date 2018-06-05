@@ -11,7 +11,7 @@ var configCmd = &cobra.Command{
 var editor string
 
 func configure(cmd *cobra.Command, args []string) error {
-	conf, _, err := loadConfigAndSnippets()
+	conf, _, err := loadConfigAndSnippetsMeta()
 	if err != nil {
 		return err
 	}

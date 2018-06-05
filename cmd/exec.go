@@ -15,7 +15,7 @@ var execCmd = &cobra.Command{
 func execute(cmd *cobra.Command, args []string) error {
 	title := args[0]
 	// load config & snippets
-	_, snippets, err := loadConfigAndSnippets()
+	_, snippets, err := loadConfigAndSnippetsMeta()
 	if err != nil {
 		return err
 	}
@@ -24,9 +24,7 @@ func execute(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf("%s, run \"corgi list\" to view all snippets", err.Error())
 	}
-	if err = s.Execute(); err != nil {
-		return err
-	}
+	s.Execute()
 	return nil
 }
 

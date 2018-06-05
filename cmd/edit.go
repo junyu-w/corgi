@@ -16,7 +16,7 @@ var editCmd = &cobra.Command{
 func edit(cmd *cobra.Command, args []string) error {
 	title := args[0]
 	// load config & snippets
-	config, snippets, err := loadConfigAndSnippets()
+	config, snippets, err := loadConfigAndSnippetsMeta()
 	if err != nil {
 		return err
 	}

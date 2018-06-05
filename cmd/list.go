@@ -8,13 +8,13 @@ import (
 
 var listCmd = &cobra.Command{
 	Use:   "list",
-	Short: "list all snippets",
+	Short: "List all snippets",
 	RunE:  list,
 }
 
 func list(cmd *cobra.Command, args []string) error {
 	// load config & snippets
-	_, snippets, err := loadConfigAndSnippets()
+	_, snippets, err := loadConfigAndSnippetsMeta()
 	if err != nil {
 		return err
 	}

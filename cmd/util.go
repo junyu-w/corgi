@@ -5,14 +5,14 @@ import (
 	"corgi/snippet"
 )
 
-func loadConfigAndSnippets() (*config.Config, *snippet.Snippets, error) {
+func loadConfigAndSnippetsMeta() (*config.Config, *snippet.SnippetsMeta, error) {
 	// load config
 	conf, err := config.Load()
 	if err != nil {
 		return nil, nil, err
 	}
 	// Load snippets
-	snippets, err := snippet.LoadSnippets(conf.SnippetsFile)
+	snippets, err := snippet.LoadSnippetsMeta(conf.SnippetsFile)
 	if err != nil {
 		return nil, nil, err
 	}

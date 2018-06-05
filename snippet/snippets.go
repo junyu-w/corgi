@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-type Snippets struct {
+type SnippetsMeta struct {
 	Snippets []*jsonSnippet `json:"snippets"`
 	fileLoc  string
 }
@@ -18,11 +18,11 @@ type jsonSnippet struct {
 	Title   string `json:"title"`
 }
 
-func LoadSnippets(filePath string) (*Snippets, error) {
+func LoadSnippetsMeta(filePath string) (*SnippetsMeta, error) {
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
 		return nil, err
 	}
-	snippets := &Snippets{}
+	snippets := &SnippetsMeta{}
 	if err := util.LoadJsonDataFromFile(filePath, snippets); err != nil {
 		return nil, err
 	}
@@ -32,30 +32,38 @@ func LoadSnippets(filePath string) (*Snippets, error) {
 	return snippets, nil
 }
 
-func (snippets *Snippets) Save() error {
-	if _, err := os.Stat(snippets.fileLoc); os.IsNotExist(err) {
+func (sm *SnippetsMeta) Save() error {
+	if _, err := os.Stat(sm.fileLoc); os.IsNotExist(err) {
 		return err
 	}
-	data, err := json.Marshal(snippets)
+	data, err := json.Marshal(sm)
 	if err != nil {
 		return err
 	}
-	if err = ioutil.WriteFile(snippets.fileLoc, data, 0644); err != nil {
+	if err = ioutil.WriteFile(sm.fileLoc, data, 0644); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (snippets *Snippets) AddSnippet(snippet *Snippet) {
+// Save new snippet into snippetsDir and update snippets meta file
+func (sm *SnippetsMeta) SaveNewSnippet(snippet *Snippet, snippetsDir string) error {
+	if err := snippet.Save(snippetsDir); err != nil {
+		return err
+	}
 	jsonSnippet := &jsonSnippet{
 		Title:   snippet.Title,
 		FileLoc: snippet.fileLoc,
 	}
-	snippets.Snippets = append(snippets.Snippets, jsonSnippet)
+	sm.Snippets = append(sm.Snippets, jsonSnippet)
+	if err := sm.Save(); err != nil {
+		return err
+	}
+	return nil
 }
 
-func (snippets *Snippets) FindSnippet(title string) (*Snippet, error) {
-	for _, snp := range snippets.Snippets {
+func (sm *SnippetsMeta) FindSnippet(title string) (*Snippet, error) {
+	for _, snp := range sm.Snippets {
 		if snp.Title == title {
 			s, err := LoadSnippet(snp.FileLoc)
 			if err != nil {
