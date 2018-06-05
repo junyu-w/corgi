@@ -47,13 +47,13 @@ corgi list
 ### Execute snippet  
 To execute a snippet, simply run  
 ```  
-corgi exec --title <title of the snippet>  
+corgi exec <title of the snippet>  
 ```  
   
 ### Edit snippet  
 To edit a snippet, run  
 ```  
-corgi edit --title <title of the snippet>  
+corgi edit <title of the snippet>  
 ```  
   
 ### Configure CLI  
