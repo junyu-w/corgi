@@ -128,6 +128,13 @@ func (snippet *Snippet) Execute() error {
 	return nil
 }
 
+func (snippet *Snippet) Describe() {
+	fmt.Printf("%s: %s\n", color.YellowString("Title"), snippet.Title)
+	for idx, step := range snippet.Steps {
+		fmt.Printf("%s %s\n", color.YellowString("Step %d -", idx+1), step.Description)
+	}
+}
+
 func (snippet *Snippet) GetFilePath() string {
 	return snippet.fileLoc
 }
