@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"github.com/spf13/cobra"
 )
@@ -9,23 +8,19 @@ import (
 var execCmd = &cobra.Command{
 	Use:   "exec",
 	Short: "Execute a snippet",
+	Args:  cobra.ExactArgs(1),
 	RunE:  execute,
 }
 
-var execTitle string
-
 func execute(cmd *cobra.Command, args []string) error {
-	if execTitle == "" {
-		// TODO: launch fzf search
-		return errors.New("must specify --title to execute command")
-	}
+	title := args[0]
 	// load config & snippets
 	_, snippets, err := loadConfigAndSnippets()
 	if err != nil {
 		return err
 	}
 	// find snippet corresponds to title
-	s, err := snippets.FindSnippet(execTitle)
+	s, err := snippets.FindSnippet(title)
 	if err != nil {
 		return fmt.Errorf("%s, run \"corgi list\" to view all snippets", err.Error())
 	}
@@ -36,6 +31,5 @@ func execute(cmd *cobra.Command, args []string) error {
 }
 
 func init() {
-	execCmd.Flags().StringVarP(&execTitle, "title", "t", "", "Name of the snippet to execute")
 	rootCmd.AddCommand(execCmd)
 }

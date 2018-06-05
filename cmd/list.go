@@ -21,7 +21,7 @@ func list(cmd *cobra.Command, args []string) error {
 	// display
 	fmt.Println("Here is the list of corgi snippets saved on your system:")
 	for _, s := range snippets.Snippets {
-		color.Yellow("[ %s ]", s.Title)
+		color.Yellow("- %s", s.Title)
 	}
 	return nil
 }
