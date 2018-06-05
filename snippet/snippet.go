@@ -84,16 +84,32 @@ func (snippet *Snippet) Save(snippetsDir string) error {
 	fmt.Printf("Saving snippet %s... ", snippet.Title)
 	filePath := fmt.Sprintf("%s/%s.json", snippetsDir, strings.Replace(snippet.Title, " ", "_", -1))
 	snippet.fileLoc = filePath
-	data, err := json.Marshal(snippet)
-	if err != nil {
-		color.Red("Failure")
-		return err
-	}
-	if err = ioutil.WriteFile(filePath, data, 0644); err != nil {
+	if err := snippet.writeToFile(filePath); err != nil {
 		color.Red("Failure")
 		return err
 	}
 	color.Green("Success")
+	return nil
+}
+
+func (snippet *Snippet) Export(outputPath string) error {
+	fmt.Printf("Exporting snippet %s... ", snippet.Title)
+	if err := snippet.writeToFile(outputPath); err != nil {
+		color.Red("Failure")
+		return err
+	}
+	color.Green("Success")
+	return nil
+}
+
+func (snippet *Snippet) writeToFile(filePath string) error {
+	data, err := json.Marshal(snippet)
+	if err != nil {
+		return err
+	}
+	if err = ioutil.WriteFile(filePath, data, 0644); err != nil {
+		return err
+	}
 	return nil
 }
 
