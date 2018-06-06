@@ -24,8 +24,6 @@ type TemplateField struct {
 	Value     string `json:"default_value"`
 }
 
-type TemplateFieldMap map[string]*TemplateField
-
 func NewStepInfo(command string) *StepInfo {
 	return &StepInfo{
 		Command: command,
@@ -49,14 +47,17 @@ func (step *StepInfo) AskQuestion(options ...interface{}) error {
 }
 
 // TODO: add concurrent execution
-func (step *StepInfo) Execute() error {
+func (step *StepInfo) Execute(existingTemplates *TemplateFieldMap) error {
 	// fill in templates
-	templateFieldsMap := ParseTemplateFields(step.Command)
-	for _, t := range templateFieldsMap {
-		t.AskQuestion()
+	templateFieldsMap := ParseTemplateFieldsMap(step.Command)
+	for field, t := range templateFieldsMap {
+		if _, ok := (*existingTemplates)[field]; !ok {
+			t.AskQuestion()
+			existingTemplates.AddTemplateFieldIfNotExist(t)
+		}
 	}
 	// replace params in command with input values
-	command := FillTemplates(step.Command, &templateFieldsMap)
+	command := FillTemplates(step.Command, existingTemplates)
 	// execute command
 	fmt.Printf("%s: %s\n", color.GreenString("Running"), color.YellowString(command))
 	cmd := exec.Command("sh", "-c", strings.TrimSpace(command))
@@ -85,13 +86,13 @@ func getParamNameAndValue(p string) (string, string) {
 	return field, val
 }
 
-func ParseTemplateFields(c string) TemplateFieldMap {
+func ParseTemplateFieldsMap(c string) TemplateFieldMap {
 	re := regexp.MustCompile(TemplateParamsRegex)
 	params := re.FindAllString(c, -1)
 	tfMap := TemplateFieldMap{}
 	for _, p := range params {
 		field, defaultVal := getParamNameAndValue(p)
-		tfMap.AddTemplateField(&TemplateField{
+		tfMap.AddTemplateFieldIfNotExist(&TemplateField{
 			FieldName: field,
 			Value:     defaultVal,
 		})
@@ -119,15 +120,4 @@ func (tf *TemplateField) AskQuestion(options ...interface{}) error {
 	}
 	tf.Value = val
 	return nil
-}
-
-func (tfMap TemplateFieldMap) AddTemplateField(t *TemplateField) {
-	if _, ok := tfMap[t.FieldName]; ok {
-		// take the latest non-empty default value
-		if t.Value != "" {
-			tfMap[t.FieldName] = t
-		}
-	} else {
-		tfMap[t.FieldName] = t
-	}
 }

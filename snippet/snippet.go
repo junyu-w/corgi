@@ -15,6 +15,8 @@ type Snippet struct {
 	fileLoc string
 }
 
+type TemplateFieldMap map[string]*TemplateField // map from field name to template field object
+
 type Answerable interface {
 	AskQuestion(options ...interface{}) error
 }
@@ -115,10 +117,11 @@ func (snippet *Snippet) writeToFile(filePath string) error {
 
 func (snippet *Snippet) Execute() error {
 	fmt.Println(color.GreenString("Start executing snippet \"%s\"...\n", snippet.Title))
+	templateFieldMap := &TemplateFieldMap{}
 	for idx, step := range snippet.Steps {
 		stepCount := idx + 1
 		fmt.Printf("%s: %s\n", color.GreenString("Step %d", stepCount), color.YellowString(step.Description))
-		if err := step.Execute(); err != nil {
+		if err := step.Execute(templateFieldMap); err != nil {
 			color.Red("[ Failure ]")
 			return err
 		}
@@ -146,4 +149,16 @@ func LoadSnippet(filePath string) (*Snippet, error) {
 	}
 	snippet.fileLoc = filePath
 	return snippet, nil
+}
+
+func (tfMap TemplateFieldMap) AddTemplateFieldIfNotExist(t *TemplateField) {
+	if _, ok := tfMap[t.FieldName]; ok {
+		// take the latest non-empty default value
+		if t.Value != "" {
+			tfMap[t.FieldName] = t
+		}
+	} else {
+		tfMap[t.FieldName] = t
+
+	}
 }
