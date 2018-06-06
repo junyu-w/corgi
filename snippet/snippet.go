@@ -3,6 +3,7 @@ package snippet
 import (
 	"corgi/util"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/fatih/color"
 	"io/ioutil"
@@ -15,9 +16,13 @@ type Snippet struct {
 	fileLoc string
 }
 
+type TemplateFieldMap map[string]*TemplateField // map from field name to template field object
+
 type Answerable interface {
 	AskQuestion(options ...interface{}) error
 }
+
+var MissingDefaultValueError = errors.New("missing default value for template field")
 
 func NewSnippet(title string, cmds []string) (*Snippet, error) {
 	snippet := &Snippet{
@@ -26,6 +31,15 @@ func NewSnippet(title string, cmds []string) (*Snippet, error) {
 	if err := snippet.AskQuestion(cmds); err != nil {
 		return nil, err
 	}
+	return snippet, nil
+}
+
+func LoadSnippet(filePath string) (*Snippet, error) {
+	snippet := &Snippet{}
+	if err := util.LoadJsonDataFromFile(filePath, snippet); err != nil {
+		return nil, err
+	}
+	snippet.fileLoc = filePath
 	return snippet, nil
 }
 
@@ -113,12 +127,28 @@ func (snippet *Snippet) writeToFile(filePath string) error {
 	return nil
 }
 
-func (snippet *Snippet) Execute() error {
+func (snippet *Snippet) Execute(options ...interface{}) error {
 	fmt.Println(color.GreenString("Start executing snippet \"%s\"...\n", snippet.Title))
+	// execution logic
+	useDefaultVal := options[0].(bool)
+	templateFieldMap := snippet.BuildTemplateFieldMap()
+	if useDefaultVal {
+		// check if all fields has default if --use-default set
+		fieldWithNoDefault := make([]string, 0)
+		for field, tf := range templateFieldMap {
+			if tf.Value == "" {
+				fieldWithNoDefault = append(fieldWithNoDefault, fmt.Sprintf("<%s>", field))
+			}
+		}
+		if len(fieldWithNoDefault) > 0 {
+			color.Red("[ Failure ] - Template field(s) %s do(es) not have default value set", strings.Join(fieldWithNoDefault, ", "))
+			return MissingDefaultValueError
+		}
+	}
 	for idx, step := range snippet.Steps {
 		stepCount := idx + 1
 		fmt.Printf("%s: %s\n", color.GreenString("Step %d", stepCount), color.YellowString(step.Description))
-		if err := step.Execute(); err != nil {
+		if err := step.Execute(&templateFieldMap, useDefaultVal); err != nil {
 			color.Red("[ Failure ]")
 			return err
 		}
@@ -139,11 +169,25 @@ func (snippet *Snippet) GetFilePath() string {
 	return snippet.fileLoc
 }
 
-func LoadSnippet(filePath string) (*Snippet, error) {
-	snippet := &Snippet{}
-	if err := util.LoadJsonDataFromFile(filePath, snippet); err != nil {
-		return nil, err
+func (snippet *Snippet) BuildTemplateFieldMap() TemplateFieldMap {
+	tfMap := TemplateFieldMap{}
+	for _, step := range snippet.Steps {
+		curTfMap := ParseTemplateFieldsMap(step.Command)
+		for _, tf := range curTfMap {
+			tfMap.AddTemplateFieldIfNotExist(tf)
+		}
 	}
-	snippet.fileLoc = filePath
-	return snippet, nil
+	return tfMap
+}
+
+func (tfMap TemplateFieldMap) AddTemplateFieldIfNotExist(t *TemplateField) {
+	if _, ok := tfMap[t.FieldName]; ok {
+		// take the latest non-empty default value
+		if t.Value != "" {
+			tfMap[t.FieldName] = t
+		}
+	} else {
+		tfMap[t.FieldName] = t
+
+	}
 }
