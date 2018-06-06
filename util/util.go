@@ -11,6 +11,7 @@ import (
 const (
 	JSON_MARSHAL_PREFIX = ""
 	JSON_MARSHAL_INDENT = "  "
+	STEP_RANGE_SEP      = "-"
 )
 
 func LoadJsonDataFromFile(filePath string, object interface{}) error {

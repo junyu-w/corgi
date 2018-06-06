@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/fatih/color"
 	"io/ioutil"
+	"strconv"
 	"strings"
 )
 
@@ -22,7 +23,10 @@ type Answerable interface {
 	AskQuestion(options ...interface{}) error
 }
 
-var MissingDefaultValueError = errors.New("missing default value for template field")
+var (
+	MissingDefaultValueError = errors.New("missing default value for template field")
+	InvalidStepRangeError    = errors.New("step range specified is invalid")
+)
 
 func NewSnippet(title string, cmds []string) (*Snippet, error) {
 	snippet := &Snippet{
@@ -129,7 +133,7 @@ func (snippet *Snippet) writeToFile(filePath string) error {
 
 func (snippet *Snippet) Execute(options ...interface{}) error {
 	fmt.Println(color.GreenString("Start executing snippet \"%s\"...\n", snippet.Title))
-	// execution logic
+	// build template fields
 	useDefaultVal := options[0].(bool)
 	templateFieldMap := snippet.BuildTemplateFieldMap()
 	if useDefaultVal {
@@ -145,8 +149,15 @@ func (snippet *Snippet) Execute(options ...interface{}) error {
 			return MissingDefaultValueError
 		}
 	}
-	for idx, step := range snippet.Steps {
-		stepCount := idx + 1
+	// select step range
+	stepRange := options[1].(string)
+	start, end, err := snippet.ParseStepRangeToIdx(stepRange)
+	if err != nil {
+		color.Red("[ Failure ] - %s", err.Error())
+		return err
+	}
+	for idx, step := range snippet.Steps[start:end] {
+		stepCount := start + idx + 1
 		fmt.Printf("%s: %s\n", color.GreenString("Step %d", stepCount), color.YellowString(step.Description))
 		if err := step.Execute(&templateFieldMap, useDefaultVal); err != nil {
 			color.Red("[ Failure ]")
@@ -178,6 +189,61 @@ func (snippet *Snippet) BuildTemplateFieldMap() TemplateFieldMap {
 		}
 	}
 	return tfMap
+}
+
+func (snippet *Snippet) ParseStepRangeToIdx(stepRange string) (int, int, error) {
+	if stepRange == "" {
+		return 0, len(snippet.Steps), nil
+	}
+	if strings.Contains(stepRange, util.STEP_RANGE_SEP) {
+		sRange := strings.Split(stepRange, util.STEP_RANGE_SEP)
+		if sRange[0] == "" {
+			return -1, -1, InvalidStepRangeError
+		} else if sRange[1] == "" {
+			start, err := strconv.ParseInt(sRange[0], 10, 32)
+			if err != nil {
+				return -1, -1, err
+			}
+			end := len(snippet.Steps)
+			startIdx := int(start) - 1
+			endIdx := end
+			// check for validity
+			if isStepRangeInvalid(startIdx, endIdx, len(snippet.Steps)) {
+				return -1, -1, InvalidStepRangeError
+			}
+			return startIdx, endIdx, nil
+		} else {
+			start, err := strconv.ParseInt(sRange[0], 10, 32)
+			if err != nil {
+				return -1, -1, err
+			}
+			end, err := strconv.ParseInt(sRange[1], 10, 32)
+			if err != nil {
+				return -1, -1, err
+			}
+			startIdx := int(start) - 1
+			endIdx := int(end)
+			if isStepRangeInvalid(startIdx, endIdx, len(snippet.Steps)) {
+				return -1, -1, InvalidStepRangeError
+			}
+			return startIdx, endIdx, nil
+		}
+	} else {
+		start, err := strconv.ParseInt(stepRange, 10, 32)
+		if err != nil {
+			return -1, -1, err
+		}
+		startIdx := int(start) - 1
+		endIdx := int(start)
+		if isStepRangeInvalid(startIdx, endIdx, len(snippet.Steps)) {
+			return -1, -1, InvalidStepRangeError
+		}
+		return startIdx, endIdx, nil
+	}
+}
+
+func isStepRangeInvalid(start, end, length int) bool {
+	return start < 0 || end > length || start >= end
 }
 
 func (tfMap TemplateFieldMap) AddTemplateFieldIfNotExist(t *TemplateField) {
