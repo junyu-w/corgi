@@ -1,6 +1,7 @@
 
 # Corgi - CLI workflow manager
 
+[![CodeFactor](https://www.codefactor.io/repository/github/drakew/corgi/badge)](https://www.codefactor.io/repository/github/drakew/corgi)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/DrakeW/corgi/blob/master/LICENSE)
 
 Corgi is a command-line tool that helps with your repetitive command usages by organizing them into reusable snippet. See usage by simply running `corgi` or `corgi --help`
