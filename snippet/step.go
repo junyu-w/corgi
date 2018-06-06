@@ -20,8 +20,9 @@ type StepInfo struct {
 var TemplateParamsRegex = `<([^(<>|\s)]+)>`
 
 type TemplateField struct {
-	FieldName string `json:"field_name"`
-	Value     string `json:"default_value"`
+	FieldName string
+	Value     string
+	Asked     bool
 }
 
 func NewStepInfo(command string) *StepInfo {
@@ -47,17 +48,22 @@ func (step *StepInfo) AskQuestion(options ...interface{}) error {
 }
 
 // TODO: add concurrent execution
-func (step *StepInfo) Execute(existingTemplates *TemplateFieldMap) error {
-	// fill in templates
-	templateFieldsMap := ParseTemplateFieldsMap(step.Command)
-	for field, t := range templateFieldsMap {
-		if _, ok := (*existingTemplates)[field]; !ok {
-			t.AskQuestion()
-			existingTemplates.AddTemplateFieldIfNotExist(t)
+// valid options include 'useDefaultVal' indicated by the --use-default flag
+func (step *StepInfo) Execute(templates *TemplateFieldMap, options ...interface{}) error {
+	useDefaultVal := options[0].(bool)
+	if !useDefaultVal {
+		// fill in templates
+		templateFieldsMap := ParseTemplateFieldsMap(step.Command)
+		for field := range templateFieldsMap {
+			existingTf, _ := (*templates)[field]
+			// only ask once for user input for the same template field
+			if !existingTf.Asked {
+				existingTf.AskQuestion()
+			}
 		}
 	}
 	// replace params in command with input values
-	command := FillTemplates(step.Command, existingTemplates)
+	command := FillTemplates(step.Command, templates)
 	// execute command
 	fmt.Printf("%s: %s\n", color.GreenString("Running"), color.YellowString(command))
 	cmd := exec.Command("sh", "-c", strings.TrimSpace(command))
@@ -119,5 +125,6 @@ func (tf *TemplateField) AskQuestion(options ...interface{}) error {
 		return err
 	}
 	tf.Value = val
+	tf.Asked = true
 	return nil
 }

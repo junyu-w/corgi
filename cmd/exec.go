@@ -12,6 +12,8 @@ var execCmd = &cobra.Command{
 	RunE:  execute,
 }
 
+var useDefaultParamValue bool
+
 func execute(cmd *cobra.Command, args []string) error {
 	title := args[0]
 	// load config & snippets
@@ -24,10 +26,11 @@ func execute(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf("%s, run \"corgi list\" to view all snippets", err.Error())
 	}
-	s.Execute()
+	s.Execute(useDefaultParamValue)
 	return nil
 }
 
 func init() {
+	execCmd.Flags().BoolVar(&useDefaultParamValue, "use-default", false, "Add this flag if you would like to use the default values for your defined template fields without being asked to enter a value")
 	rootCmd.AddCommand(execCmd)
 }
