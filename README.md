@@ -53,7 +53,7 @@ Furthermore, you could also add template fields (with or without default value) 
 ```  
 tar -xzf <project>.tgz && scp <project> <user=ec2-user>@<ec2-instance-address>:~/
 ```
-And you will be prompt to enter values for those fields when the snippet executes. The value set for the same field name will be applied to **all steps** in a snippet, so you don't have to enter multiple times.
+And you will be prompted to enter values for those fields when the snippet executes. The value set for the same field name will be applied to **all steps** in a snippet, so you don't have to enter multiple times.
 
 Also if you have field with **multiple default values**, the latest appearance will take precedence over the previous values.
 
