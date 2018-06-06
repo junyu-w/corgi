@@ -22,6 +22,7 @@ Execute an existing snippet knowing what command is being run and its output
     - [List snippets](#list-snippets)
     - [Describe a snippet](#describe-a-snippet)
     - [Execute a snippet](#execute-a-snippet)
+        - [Use default value without prompt](#use-default-value-without-prompt)
     - [Edit a snippet](#edit-a-snippet)
     - [Share snippets](#share-snippets)
     - [Configure corgi](#configure-corgi)
@@ -48,11 +49,14 @@ If you would like to quickly combine the last couple commands you just executed 
 ```  
 corgi new --last <number of commands to look back>  
 ```  
-Furthermore, you could also save a command template (with or without default value) as part of the snippet and reuse the same parameter, for example:  
+Furthermore, you could also add template fields (with or without default value) to command of a step and reuse the same field, for example:  
 ```  
 tar -xzf <project>.tgz && scp <project> <user=ec2-user>@<ec2-instance-address>:~/
 ```
-And you can enter the values for those parameters when the snippet executes.  
+And you will be prompted to enter values for those fields when the snippet executes. The value set for the same field name will be applied to **all steps** in a snippet, so you don't have to enter multiple times.
+
+Also if you have field with **multiple default values**, the latest appearance will take precedence over the previous values.
+
 
 ### List snippets  
 To view all snippets saved on your system, run  
@@ -67,14 +71,17 @@ corgi describe <title of the snippet>
 ```
 And it will print out each step of the snippet so that you don't have to memorize them.
   
-### Execute a snippet  
+### Execute a snippet
 To execute a snippet, simply run  
 ```  
-corgi exec <title of the snippet>  
+corgi exec <title of the snippet> [--use-default]
 ```  
 Your commands will run smoothly just as they were being run on a terminal directly, and any prompt that asks for input (for example, password prompt when you `ssh` into a remote server) will work seamlessly as well.
 
-Also note that if you run `cd` command in one of the steps, the current working directory will not change for subsequent steps. But you can always put `cd <target dir> && <do something else>` to get commands executed inside of your target directory. 
+Also note that if you run `cd` command in one of the steps, the current working directory will not change for subsequent steps. But you can always put `cd <target dir> && <do something else>` to get commands executed inside of your target directory.
+
+#### Use default value without prompt
+if `--use-default` is set, then the snippet will execute without asking explicitly for user to set a value for template fields defined, but if there are missing default values, the snippet will fail fast and tell you what fields are missed.
   
 ### Edit a snippet
 To edit a snippet, run  
