@@ -89,8 +89,8 @@ if `--use-default` is set, then the snippet will execute without asking explicit
 You can use the `--step` (or `-s`) flag to specify the steps (starting from index 1) you want to execute, for example
 ```
 --step 3    # will only execute step 3
---step 3~5  # will execute step 3 to 5
---step 3~   # will execute step 3 to the last step
+--step 3-5  # will execute step 3 to 5
+--step 3-   # will execute step 3 to the last step
 ```
 This can be particularly useful when your workflow fail midway, but you don't want to start the whole workflow from step 1 again.
 
