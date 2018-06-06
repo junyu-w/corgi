@@ -24,6 +24,7 @@ Execute an existing snippet knowing what command is being run and its output
     - [Describe a snippet](#describe-a-snippet)
     - [Execute a snippet](#execute-a-snippet)
         - [Use default value without prompt](#use-default-value-without-prompt)
+        - [Select steps to execute](#select-steps-to-execute)
     - [Edit a snippet](#edit-a-snippet)
     - [Share snippets](#share-snippets)
     - [Configure corgi](#configure-corgi)
@@ -83,7 +84,16 @@ Also note that if you run `cd` command in one of the steps, the current working 
 
 #### Use default value without prompt
 if `--use-default` is set, then the snippet will execute without asking explicitly for user to set a value for template fields defined, but if there are missing default values, the snippet will fail fast and tell you what fields are missed.
-  
+
+#### Select steps to execute
+You can use the `--step` (or `-s`) flag to specify the steps (starting from index 1) you want to execute, for example
+```
+--step 3    # will only execute step 3
+--step 3~5  # will execute step 3 to 5
+--step 3~   # will execute step 3 to the last step
+```
+This can be particularly useful when your workflow fail midway, but you don't want to start the whole workflow from step 1 again.
+
 ### Edit a snippet
 To edit a snippet, run  
 ```  
