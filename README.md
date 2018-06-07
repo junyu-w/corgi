@@ -6,7 +6,7 @@
 
 Corgi is a command-line tool that helps with your repetitive command usages by organizing them into reusable snippet. See usage by simply running `corgi` or `corgi --help`
 
-Current version: **v0.2.0-alpha**
+Current version: **v0.2.1-alpha**
 ## Examples
 
 Create a new snippet to automate the commands you run repetitively
@@ -107,7 +107,7 @@ This feature will guide you through the darkness if you don't have the title of 
 ```
 corgi exec [with or without options]
 ```
-and you will be presented an interactive interface for you to fuzzy-find your snippet (To enable this feature, see [installation instruction](#install-a-fuzzy-finder))
+and you will be presented an interactive interface to fuzzy-find your snippet (To enable this feature, see [installation instruction](#install-a-fuzzy-finder))
 
 <img src="images/corgi-fuzzy-select.gif" width="700">
 
