@@ -5,10 +5,13 @@ import (
 	"corgi/config"
 	"corgi/snippet"
 	"corgi/util"
+	"errors"
 	"io"
 	"os"
 	"strings"
 )
+
+var MissingSnippetTitleError = errors.New("snippet title is not selected")
 
 func loadConfigAndSnippetsMeta() (*config.Config, *snippet.SnippetsMeta, error) {
 	// load config

@@ -9,17 +9,8 @@ import (
 var execCmd = &cobra.Command{
 	Use:   "exec",
 	Short: "Execute a snippet",
-	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) == 1 {
-			execTitle = args[0]
-			return nil
-		}
-		if len(args) > 1 {
-			return fmt.Errorf("more than 1 title specified")
-		}
-		return nil
-	},
-	RunE: execute,
+	Args:  cobra.MaximumNArgs(1),
+	RunE:  execute,
 }
 
 var useDefaultParamValue bool
@@ -33,19 +24,22 @@ func execute(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	// find snippet title
-	if execTitle == "" {
+	var title string
+	if len(args) == 0 {
 		if conf.FilterCmd != "" {
-			execTitle, err = filter(conf.FilterCmd, snippets.GetSnippetTitles())
-			if err != nil || execTitle == "" {
-				return fmt.Errorf("failed to select snippet title")
+			title, err = filter(conf.FilterCmd, snippets.GetSnippetTitles())
+			if err != nil || title == "" {
+				return MissingSnippetTitleError
 			}
 		} else {
-			color.Red("Install a fuzzy finder (\"fzf\" or \"peco\") to enable interactive filter")
-			return fmt.Errorf("snippet title is needed")
+			color.Red("Install a fuzzy finder (\"fzf\" or \"peco\") to enable interactive selection")
+			return MissingSnippetTitleError
 		}
+	} else {
+		title = args[0]
 	}
 	// find snippet corresponds to title
-	s, err := snippets.FindSnippet(execTitle)
+	s, err := snippets.FindSnippet(title)
 	if err != nil {
 		return fmt.Errorf("%s, run \"corgi list\" to view all snippets", err.Error())
 	}
