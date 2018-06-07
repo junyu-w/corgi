@@ -18,7 +18,7 @@ Execute an existing snippet knowing what command is being run and its output
 # Table of Contents
 
 - [Installation](#installation)
-    - [Install Corgi](#install-corgi)
+    - [Install corgi](#install-corgi)
     - [Install a fuzzy-finder](#install-a-fuzzy-finder)
 - [Features](#features)
     - [Create a snippet](#create-a-snippet)
@@ -36,7 +36,7 @@ Execute an existing snippet knowing what command is being run and its output
   
 ## Installation
 
-### Install Corgi
+### Install `corgi`
 Since this project is still in its very early phase, installation via package managers like `brew` or `apt-get` is not supported. Here are the steps to follow if you would like to try it out:
 1. Download the latest `corgi` executable from releases tab
 2. `chmod a+x ./corgi` to give execution permission to all users & groups
@@ -108,6 +108,7 @@ This feature will guide you through the darkness if you don't have the title of 
 corgi exec [with or without options]
 ```
 and you will be presented an interactive interface for you to fuzzy-find your snippet (To enable this feature, see [installation instruction](#install-a-fuzzy-finder))
+
 <img src="images/corgi-fuzzy-select.gif" width="700">
 
 
