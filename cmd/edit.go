@@ -1,9 +1,10 @@
 package cmd
 
 import (
+	"corgi/util"
+	"fmt"
 	"github.com/spf13/cobra"
 	"os"
-	"os/exec"
 )
 
 var editCmd = &cobra.Command{
@@ -25,10 +26,8 @@ func edit(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	editFileCmd := exec.Command(config.Editor, s.GetFilePath())
-	editFileCmd.Stdin = os.Stdin
-	editFileCmd.Stdout = os.Stdout
-	if err := editFileCmd.Run(); err != nil {
+	command := fmt.Sprintf("%s %s", config.Editor, s.GetFilePath())
+	if err := util.Execute(command, os.Stdin, os.Stdout); err != nil {
 		return err
 	}
 	return nil

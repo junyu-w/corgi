@@ -6,7 +6,6 @@ import (
 	"github.com/fatih/color"
 	"log"
 	"os"
-	"os/exec"
 	"regexp"
 	"strings"
 )
@@ -66,11 +65,7 @@ func (step *StepInfo) Execute(templates *TemplateFieldMap, options ...interface{
 	command := FillTemplates(step.Command, templates)
 	// execute command
 	fmt.Printf("%s: %s\n", color.GreenString("Running"), color.YellowString(command))
-	cmd := exec.Command("sh", "-c", strings.TrimSpace(command))
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stdout
-	if err := cmd.Run(); err != nil {
+	if err := util.Execute(command, os.Stdin, os.Stdout); err != nil {
 		return err
 	}
 	return nil
