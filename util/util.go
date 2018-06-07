@@ -6,6 +6,7 @@ import (
 	"github.com/chzyer/readline"
 	"io"
 	"io/ioutil"
+	"os"
 	"os/exec"
 	"strings"
 )
@@ -60,7 +61,7 @@ func Execute(command string, r io.Reader, w io.Writer) error {
 	cmd := exec.Command("sh", "-c", strings.TrimSpace(command))
 	cmd.Stdin = r
 	cmd.Stdout = w
-	cmd.Stderr = w
+	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
 		return err
 	}

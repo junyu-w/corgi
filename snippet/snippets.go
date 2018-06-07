@@ -74,3 +74,11 @@ func (sm *SnippetsMeta) FindSnippet(title string) (*Snippet, error) {
 	}
 	return nil, fmt.Errorf("could not find snippet with name: %s", title)
 }
+
+func (sm *SnippetsMeta) GetSnippetTitles() []string {
+	titles := make([]string, len(sm.Snippets))
+	for idx, s := range sm.Snippets {
+		titles[idx] = s.Title
+	}
+	return titles
+}
