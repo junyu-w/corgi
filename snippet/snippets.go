@@ -4,6 +4,7 @@ import (
 	"corgi/util"
 	"encoding/json"
 	"fmt"
+	"github.com/fatih/color"
 	"io/ioutil"
 	"os"
 )
@@ -62,17 +63,53 @@ func (sm *SnippetsMeta) SaveNewSnippet(snippet *Snippet, snippetsDir string) err
 	return nil
 }
 
+func (sm *SnippetsMeta) DeleteSnippet(title string) error {
+	idx, err := sm.findJsonSnippetIndex(title)
+	if err != nil {
+		return err
+	}
+	s := sm.Snippets[idx]
+	fmt.Printf("Deleting snippet %s... ", s.Title)
+	// delete snippet file
+	fileLoc := s.FileLoc
+	if err = os.Remove(fileLoc); err != nil {
+		color.Red("Failure")
+		return err
+	}
+	// delete from snippets meta
+	sm.Snippets = append(sm.Snippets[:idx], sm.Snippets[idx+1:]...)
+	if err = sm.Save(); err != nil {
+		color.Red("Failure")
+		return err
+	}
+	color.Green("Success")
+	return nil
+}
+
 func (sm *SnippetsMeta) FindSnippet(title string) (*Snippet, error) {
-	for _, snp := range sm.Snippets {
+	idx, err := sm.findJsonSnippetIndex(title)
+	if err != nil {
+		return nil, err
+	}
+	s, err := LoadSnippet(sm.Snippets[idx].FileLoc)
+	if err != nil {
+		return nil, err
+	}
+	return s, nil
+}
+
+func (sm *SnippetsMeta) findJsonSnippetIndex(title string) (int, error) {
+	idx := -1
+	for i, snp := range sm.Snippets {
 		if snp.Title == title {
-			s, err := LoadSnippet(snp.FileLoc)
-			if err != nil {
-				return nil, err
-			}
-			return s, nil
+			idx = i
+			break
 		}
 	}
-	return nil, fmt.Errorf("could not find snippet with name: %s", title)
+	if idx == -1 {
+		return idx, fmt.Errorf("could not find snippet with name: %s", title)
+	}
+	return idx, nil
 }
 
 func (sm *SnippetsMeta) GetSnippetTitles() []string {
