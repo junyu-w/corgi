@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -26,14 +25,9 @@ func execute(cmd *cobra.Command, args []string) error {
 	// find snippet title
 	var title string
 	if len(args) == 0 {
-		if conf.FilterCmd != "" {
-			title, err = filter(conf.FilterCmd, snippets.GetSnippetTitles())
-			if err != nil || title == "" {
-				return MissingSnippetTitleError
-			}
-		} else {
-			color.Red("Install a fuzzy finder (\"fzf\" or \"peco\") to enable interactive selection")
-			return MissingSnippetTitleError
+		title, err = filterSnippetTitle(conf.FilterCmd, snippets.GetSnippetTitles())
+		if err != nil {
+			return err
 		}
 	} else {
 		title = args[0]

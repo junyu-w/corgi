@@ -9,6 +9,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"github.com/fatih/color"
 )
 
 var MissingSnippetTitleError = errors.New("snippet title is not selected")
@@ -36,4 +37,17 @@ func filter(filterCmd string, candidates []string) (string, error) {
 	}
 	result := strings.Trim(strings.TrimSpace(buf.String()), "\n")
 	return result, nil
+}
+
+func filterSnippetTitle(filterCmd string, titles []string) (string, error) {
+	if filterCmd != "" {
+		title, err := filter(filterCmd, titles)
+		if err != nil || title == "" {
+			return "", MissingSnippetTitleError
+		}
+		return title, nil
+	} else {
+		color.Red("Install a fuzzy finder (\"fzf\" or \"peco\") to enable interactive selection")
+		return "", MissingSnippetTitleError
+	}
 }
