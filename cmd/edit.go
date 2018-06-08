@@ -1,34 +1,42 @@
 package cmd
 
 import (
+	"corgi/util"
+	"fmt"
 	"github.com/spf13/cobra"
 	"os"
-	"os/exec"
 )
 
 var editCmd = &cobra.Command{
 	Use:   "edit",
 	Short: "Edit a snippet",
-	Args:  cobra.ExactArgs(1),
+	Args:  cobra.MaximumNArgs(1),
 	RunE:  edit,
 }
 
 func edit(cmd *cobra.Command, args []string) error {
-	title := args[0]
 	// load config & snippets
-	config, snippets, err := loadConfigAndSnippetsMeta()
+	conf, snippets, err := loadConfigAndSnippetsMeta()
 	if err != nil {
 		return err
+	}
+	// find snippet title
+	var title string
+	if len(args) == 0 {
+		title, err = filterSnippetTitle(conf.FilterCmd, snippets.GetSnippetTitles())
+		if err != nil {
+			return err
+		}
+	} else {
+		title = args[0]
 	}
 	// find snippet
 	s, err := snippets.FindSnippet(title)
 	if err != nil {
 		return err
 	}
-	editFileCmd := exec.Command(config.Editor, s.GetFilePath())
-	editFileCmd.Stdin = os.Stdin
-	editFileCmd.Stdout = os.Stdout
-	if err := editFileCmd.Run(); err != nil {
+	command := fmt.Sprintf("%s %s", conf.Editor, s.GetFilePath())
+	if err := util.Execute(command, os.Stdin, os.Stdout); err != nil {
 		return err
 	}
 	return nil

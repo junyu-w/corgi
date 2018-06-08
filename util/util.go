@@ -4,13 +4,17 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/chzyer/readline"
+	"io"
 	"io/ioutil"
+	"os"
+	"os/exec"
 	"strings"
 )
 
 const (
 	JSON_MARSHAL_PREFIX = ""
 	JSON_MARSHAL_INDENT = "  "
+	STEP_RANGE_SEP      = "-"
 )
 
 func LoadJsonDataFromFile(filePath string, object interface{}) error {
@@ -51,4 +55,15 @@ func Scan(prompt string, defaultInp string, historyFile string) (string, error) 
 		return line, nil
 	}
 	return "", errors.New("cancelled")
+}
+
+func Execute(command string, r io.Reader, w io.Writer) error {
+	cmd := exec.Command("sh", "-c", strings.TrimSpace(command))
+	cmd.Stdin = r
+	cmd.Stdout = w
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		return err
+	}
+	return nil
 }
