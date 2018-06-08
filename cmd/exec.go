@@ -14,18 +14,17 @@ var execCmd = &cobra.Command{
 
 var useDefaultParamValue bool
 var stepRange string
-var execTitle string
 
 func execute(cmd *cobra.Command, args []string) error {
 	// load config & snippets
-	conf, snippets, err := loadConfigAndSnippetsMeta()
+	conf, snippetsMeta, err := loadConfigAndSnippetsMeta()
 	if err != nil {
 		return err
 	}
 	// find snippet title
 	var title string
 	if len(args) == 0 {
-		title, err = filterSnippetTitle(conf.FilterCmd, snippets.GetSnippetTitles())
+		title, err = filterSnippetTitle(conf.FilterCmd, snippetsMeta.GetSnippetTitles())
 		if err != nil {
 			return err
 		}
@@ -33,7 +32,7 @@ func execute(cmd *cobra.Command, args []string) error {
 		title = args[0]
 	}
 	// find snippet corresponds to title
-	s, err := snippets.FindSnippet(title)
+	s, err := snippetsMeta.FindSnippet(title)
 	if err != nil {
 		return fmt.Errorf("%s, run \"corgi list\" to view all snippets", err.Error())
 	}
