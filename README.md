@@ -45,7 +45,7 @@ Execute an existing snippet knowing what command is being run and its output
 Since this project is still in its very early phase, installation via package managers like `brew` or `apt-get` is not supported. Here are the steps to follow if you would like to try it out:
 1. Download the latest executable from [releases](https://github.com/DrakeW/corgi/releases) based on your system (currently support linux and macOS).
 2. Rename it to `corgi` and make sure the execution bit is turned on (`chmod u+x ./corgi`)
-3. Put it into your `bin` folder or create a softlink with `ln -s $(pwd)/corgi <your bin folder>/bin`
+3. Put it into your `bin` folder or create a softlink with `ln -s $(pwd)/corgi <your bin folder>/corgi`
 
 #### Homebrew
 Corgi is still sprinting towards Homebrew, stay tuned
