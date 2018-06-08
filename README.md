@@ -6,7 +6,7 @@
 
 Corgi is a command-line tool that helps with your repetitive command usages by organizing them into reusable snippet. See usage by simply running `corgi` or `corgi --help`
 
-Current version: **v0.2.0-alpha**
+Current version: **v0.2.1-alpha**
 ## Examples
 
 Create a new snippet to automate the commands you run repetitively
@@ -18,6 +18,8 @@ Execute an existing snippet knowing what command is being run and its output
 # Table of Contents
 
 - [Installation](#installation)
+    - [Install corgi](#install-corgi)
+    - [Install a fuzzy-finder](#install-a-fuzzy-finder)
 - [Features](#features)
     - [Create a snippet](#create-a-snippet)
     - [List snippets](#list-snippets)
@@ -25,19 +27,25 @@ Execute an existing snippet knowing what command is being run and its output
     - [Execute a snippet](#execute-a-snippet)
         - [Use default value without prompt](#use-default-value-without-prompt)
         - [Select steps to execute](#select-steps-to-execute)
+        - [Interactive snippet selection](#interactive-snippet-selection)
     - [Edit a snippet](#edit-a-snippet)
     - [Share snippets](#share-snippets)
     - [Configure corgi](#configure-corgi)
 - [Roadmap](#roadmap)
 - [Note](#note)
   
-## Installation  
+## Installation
+
+### Install `corgi`
 Since this project is still in its very early phase, installation via package managers like `brew` or `apt-get` is not supported. Here are the steps to follow if you would like to try it out:
 1. Download the latest `corgi` executable from releases tab
 2. `chmod a+x ./corgi` to give execution permission to all users & groups
 3. (Optional) If you already have a previous release of corgi installed, remove the soft link in your `bin` folder first
 4. Create a soft link of the `corgi` executable to your local `bin` folder  - (if you are on Mac, you can use `ln -s $(pwd)/corgi /usr/local/bin/corgi`)
 5. Start `Corgi`ing
+
+### Install a fuzzy-finder
+`corgi` will enable interactive selection if you install a fuzzy finder, the currently supported two are [fzf](https://github.com/junegunn/fzf) and [peco](https://github.com/peco/peco).
   
 ## Features 
 To view usage of a specific action, run `corgi <action> --help`  
@@ -76,7 +84,7 @@ And it will print out each step of the snippet so that you don't have to memoriz
 ### Execute a snippet
 To execute a snippet, simply run  
 ```  
-corgi exec <title of the snippet> [--use-default]
+corgi exec [<title of the snippet>] [--use-default] [--step <step range>]
 ```  
 Your commands will run smoothly just as they were being run on a terminal directly, and any prompt that asks for input (for example, password prompt when you `ssh` into a remote server) will work seamlessly as well.
 
@@ -94,12 +102,24 @@ You can use the `--step` (or `-s`) flag to specify the steps (starting from inde
 ```
 This can be particularly useful when your workflow fail midway, but you don't want to start the whole workflow from step 1 again.
 
+#### Interactive snippet selection
+This feature will guide you through the darkness if you don't have the title of your snippet memorized. Simply type
+```
+corgi exec [with or without options]
+```
+and you will be presented an interactive interface to fuzzy-find your snippet (To enable this feature, see [installation instruction](#install-a-fuzzy-finder))
+
+<img src="images/corgi-fuzzy-select.gif" width="700">
+
+
 ### Edit a snippet
 To edit a snippet, run  
 ```  
-corgi edit <title of the snippet>  
+corgi edit [<title of the snippet>]  
 ```  
 You'll be able to edit the snippet json file directly with your preferred editor (configurable via `corgi config` command, details see below)
+
+Furthermore, `edit` also provides [fuzzy finding capabilities](#interactive-snippet-selection) when you omit the snippet title.
 
 ### Share snippets
 If someone shares his/her snippet json file(s) with you, you can import it by running

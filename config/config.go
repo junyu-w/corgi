@@ -3,6 +3,7 @@ package config
 import (
 	"corgi/util"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -14,14 +15,19 @@ type Config struct {
 	SnippetsFile string `json:"snippets_file"`
 	SnippetsDir  string `json:"snippets_dir"`
 	Editor       string `json:"editor"`
+	FilterCmd    string `json:"filter_cmd"`
 }
 
 const (
-	DEFAULT_CONFIG_FILE   = ".corgi/corgi_conf.json"
-	DEFAULT_SNIPPETS_DIR  = ".corgi/snippets"
-	DEFAULT_SNIPPETS_FILE = ".corgi/snippets.json"
-	DEFAULT_EDITOR        = "vim"
+	DEFAULT_CONFIG_FILE     = ".corgi/corgi_conf.json"
+	DEFAULT_SNIPPETS_DIR    = ".corgi/snippets"
+	DEFAULT_SNIPPETS_FILE   = ".corgi/snippets.json"
+	DEFAULT_EDITOR          = "vim"
+	DEFAULT_FILTER_CMD_FZF  = "fzf"
+	DEFAULT_FILTER_CMD_PECO = "peco"
 )
+
+var MissingDefaultFilterCmdError = errors.New("missing default filter cmd")
 
 func getOrCreatePath(loc string, perm os.FileMode, isDir bool) error {
 	dirPath := path.Dir(loc)
@@ -79,6 +85,21 @@ func GetDefaultEditor() (string, error) {
 	return editorPath, nil
 }
 
+func GetDefaultFilterCmd() (string, error) {
+	filterCmdPath, err := exec.LookPath(DEFAULT_FILTER_CMD_PECO)
+	if err != nil {
+		filterCmdPath = ""
+	}
+	filterCmdPath, err = exec.LookPath(DEFAULT_FILTER_CMD_FZF)
+	if err != nil {
+		filterCmdPath = ""
+	}
+	if filterCmdPath == "" {
+		return "", MissingDefaultFilterCmdError
+	}
+	return filterCmdPath, nil
+}
+
 func Load() (*Config, error) {
 	configFile, err := GetDefaultConfigFile()
 	if err != nil {
@@ -88,8 +109,8 @@ func Load() (*Config, error) {
 	if err = util.LoadJsonDataFromFile(configFile, config); err != nil {
 		return nil, err
 	}
-	// if config file has not content, initialize it with default
-	if config.SnippetsFile == "" && config.SnippetsDir == "" && config.Editor == "" {
+	// if config file has no content, initialize it with default
+	if config.IsNew() {
 		// set default snippets file
 		snippetsFile, err := GetDefaultSnippetsFile()
 		if err != nil {
@@ -108,6 +129,12 @@ func Load() (*Config, error) {
 			return nil, err
 		}
 		config.Editor = editor
+		// set default filter cmd
+		filterCmd, err := GetDefaultFilterCmd()
+		if err != nil && err != MissingDefaultFilterCmdError {
+			return nil, err
+		}
+		config.FilterCmd = filterCmd
 		// save
 		config.Save()
 	}
@@ -128,4 +155,8 @@ func (c *Config) Save() error {
 		return err
 	}
 	return nil
+}
+
+func (c *Config) IsNew() bool {
+	return c.SnippetsFile == "" && c.SnippetsDir == "" && c.Editor == "" && c.FilterCmd == ""
 }

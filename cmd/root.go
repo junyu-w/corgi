@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-var appVersion = "v0.2.0-alpha"
+var appVersion = "v0.2.1-alpha"
 
 var rootCmd = &cobra.Command{
 	Use:          "corgi",
