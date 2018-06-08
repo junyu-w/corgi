@@ -23,13 +23,14 @@ Execute an existing snippet knowing what command is being run and its output
 - [Features](#features)
     - [Create a snippet](#create-a-snippet)
     - [List snippets](#list-snippets)
-    - [Describe a snippet](#describe-a-snippet)
     - [Execute a snippet](#execute-a-snippet)
         - [Use default value without prompt](#use-default-value-without-prompt)
         - [Select steps to execute](#select-steps-to-execute)
         - [Interactive snippet selection](#interactive-snippet-selection)
     - [Edit a snippet](#edit-a-snippet)
+    - [Describe a snippet](#describe-a-snippet)
     - [Share snippets](#share-snippets)
+    - [Remove a snippet](#remove-a-snippet)
     - [Configure corgi](#configure-corgi)
 - [Roadmap](#roadmap)
 - [Note](#note)
@@ -73,13 +74,6 @@ To view all snippets saved on your system, run
 ```  
 corgi list  
 ```  
-
-### Describe a snippet
-To see the details of a snippet, you can run
-```
-corgi describe <title of the snippet>
-```
-And it will print out each step of the snippet so that you don't have to memorize them.
   
 ### Execute a snippet
 To execute a snippet, simply run  
@@ -121,16 +115,29 @@ You'll be able to edit the snippet json file directly with your preferred editor
 
 Furthermore, `edit` also provides [fuzzy finding capabilities](#interactive-snippet-selection) when you omit the snippet title.
 
+### Describe a snippet
+To see the details of a snippet, you can run (without title will yield interactive title selection)
+```
+corgi describe [<title of the snippet>]
+```
+And it will print out each step of the snippet so that you don't have to memorize them.
+
 ### Share snippets
 If someone shares his/her snippet json file(s) with you, you can import it by running
 ```
 corgi import <snippet json file 1> [<snippet json file 2>...]
 ```
-And similarly, if you already have a workflow defined in a snippet, you can easily share it by exporting via
+And similarly, if you already have a workflow defined in a snippet, you can easily share it by exporting via (without title will yield interactive title selection)
 ```
-corgi export <title of the snippet> [-o <output file path>]
+corgi export [<title of the snippet>] [-o <output file path>]
 ```
 and send the json file to another person
+
+### Remove a snippet
+You can remove a snippet by running (without title will yield interactive title selection)
+```
+corgi remove [<title of the snippet>]
+```
   
 ### Configure `corgi` 
 Currently the only editable option is your text editor choice (default is `vim`), to configure the corgi CLI, run  
