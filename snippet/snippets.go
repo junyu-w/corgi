@@ -53,7 +53,7 @@ func (sm *SnippetsMeta) SaveNewSnippet(snippet *Snippet, snippetsDir string) err
 	// check for duplicate
 	if sm.isDuplicate(snippet.Title) {
 		t := time.Now()
-		newTitle := fmt.Sprintf("%s %s", snippet.Title, t.Format(time.RFC822))
+		newTitle := fmt.Sprintf("%s (%s)", snippet.Title, t.Format(time.RFC822))
 		color.Red("Snippet with title \"%s\" already existed - saving as \"%s\"", snippet.Title, newTitle)
 		snippet.Title = newTitle
 	}
