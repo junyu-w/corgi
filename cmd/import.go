@@ -6,8 +6,8 @@ import (
 )
 
 var importCmd = &cobra.Command{
-	Use:   "import",
-	Short: "Import a snippet from json file",
+	Use:   "import [file1] [file2...]",
+	Short: "Import a snippet from one or multiple json files",
 	Args:  cobra.MinimumNArgs(1),
 	RunE:  importSnippet,
 }

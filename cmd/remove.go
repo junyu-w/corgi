@@ -3,7 +3,7 @@ package cmd
 import "github.com/spf13/cobra"
 
 var removeCmd = &cobra.Command{
-	Use:   "remove",
+	Use:   "remove [title]",
 	Short: "Remove a snippet",
 	Args:  cobra.MaximumNArgs(1),
 	RunE:  remove,

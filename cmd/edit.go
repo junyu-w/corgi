@@ -8,7 +8,7 @@ import (
 )
 
 var editCmd = &cobra.Command{
-	Use:   "edit",
+	Use:   "edit [title]",
 	Short: "Edit a snippet",
 	Args:  cobra.MaximumNArgs(1),
 	RunE:  edit,
