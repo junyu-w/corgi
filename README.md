@@ -19,8 +19,8 @@ Execute an existing snippet knowing what command is being run and its output
 
 - [Installation](#installation)
     - [Install corgi](#install-corgi)
-        - [Binary](#binary)
         - [Homebrew](#homebrew)
+        - [Binary](#binary)
     - [Install a fuzzy-finder](#install-a-fuzzy-finder)
 - [Features](#features)
     - [Create a snippet](#create-a-snippet)
@@ -41,14 +41,16 @@ Execute an existing snippet knowing what command is being run and its output
 
 ### Install `corgi`
 
-#### Binary
-Since this project is still in its very early phase, installation via package managers like `brew` or `apt-get` is not supported. Here are the steps to follow if you would like to try it out:
-1. Download the latest executable from [releases](https://github.com/DrakeW/corgi/releases) based on your system (currently support linux and macOS).
-2. Rename it to `corgi` and make sure the execution bit is turned on (`chmod u+x ./corgi`)
-3. Put it into your `bin` folder or create a softlink with `ln -s $(pwd)/corgi <your bin folder>/corgi`
-
 #### Homebrew
-Corgi is still sprinting towards Homebrew, stay tuned
+Run `brew install drakew/corgi/corgi` and you are good to roll!
+
+#### Binary
+To install the binary:
+1. Download the latest executable from [releases](https://github.com/DrakeW/corgi/releases) based on your system (currently support linux and macOS).
+2. Unzip the package with `tar -xzvf <downloaded tar.gz file>`
+3. `cd <directory extracted>`, and `chmod a+x ./corgi` to make sure execution bit is turned on by doing 
+4. `ln -s $(pwd)/corgi <your bin folder>/corgi` to create a softlink
+5. Start rolling with `corgi`
 
 ### Install a fuzzy-finder
 `corgi` will enable interactive selection if you install a fuzzy finder, the currently supported two are [fzf](https://github.com/junegunn/fzf) and [peco](https://github.com/peco/peco).
