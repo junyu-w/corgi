@@ -55,7 +55,7 @@ To install the binary directly:
 
 #### Build from scratch
 To build the executable from scratch:
-1. Install the most recent versin of `go` language on your system
+1. Install the most recent version of `go` language on your system
 2. `git clone git@github.com:DrakeW/corgi.git`
 3. Run `go build -o corgi` inside of the repo
 4. `ln -s $(pwd)/corgi <your bin folder>/corgi`
