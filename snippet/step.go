@@ -13,7 +13,6 @@ import (
 type StepInfo struct {
 	Command           string `json:"command"`
 	Description       string `json:"description,omitempty"`
-	ExecuteConcurrent bool   `json:"execute_concurrent"`
 }
 
 var TemplateParamsRegex = `<([^(<>|\s)]+)>`

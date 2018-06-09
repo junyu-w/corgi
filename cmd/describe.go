@@ -3,7 +3,7 @@ package cmd
 import "github.com/spf13/cobra"
 
 var describeCmd = &cobra.Command{
-	Use:   "describe",
+	Use:   "describe [title]",
 	Short: "Describe a snippet",
 	Args:  cobra.MaximumNArgs(1),
 	RunE:  describe,

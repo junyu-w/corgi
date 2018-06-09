@@ -7,7 +7,7 @@ import (
 )
 
 var exportCmd = &cobra.Command{
-	Use:   "export",
+	Use:   "export [title]",
 	Short: "Export a snippet to json file",
 	Args:  cobra.MaximumNArgs(1),
 	RunE:  export,

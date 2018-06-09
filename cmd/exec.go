@@ -6,7 +6,7 @@ import (
 )
 
 var execCmd = &cobra.Command{
-	Use:   "exec",
+	Use:   "exec [title]",
 	Short: "Execute a snippet",
 	Args:  cobra.MaximumNArgs(1),
 	RunE:  execute,

@@ -29,7 +29,7 @@ func create(cmd *cobra.Command, args []string) error {
 	}
 	defer snippet.RemoveHistFile()
 	// load config and snippets
-	conf, snippets, err := loadConfigAndSnippetsMeta()
+	conf, snippetsMeta, err := loadConfigAndSnippetsMeta()
 	if err != nil {
 		return err
 	}
@@ -40,7 +40,7 @@ func create(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	// add new sninppet to snippets meta and save
-	if err = snippets.SaveNewSnippet(newSnippet, conf.SnippetsDir); err != nil {
+	if err = snippetsMeta.SaveNewSnippet(newSnippet, conf.SnippetsDir); err != nil {
 		return err
 	}
 	return nil

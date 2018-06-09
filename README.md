@@ -6,7 +6,7 @@
 
 Corgi is a command-line tool that helps with your repetitive command usages by organizing them into reusable snippet. See usage by simply running `corgi` or `corgi --help`
 
-Current version: **v0.2.1**
+Current version: **v0.2.2**
 ## Examples
 
 Create a new snippet to automate the commands you run repetitively
@@ -145,9 +145,9 @@ corgi remove [<title of the snippet>]
 ```
   
 ### Configure `corgi` 
-Currently the only editable option is your text editor choice (default is `vim`), to configure the corgi CLI, run  
+You can configure your text editor choice (default is `vim`) for snippet editing, and filter tool for interactive snippet selection. To configure the corgi CLI, run  
 ```  
-corgi config --editor <editor of your choice>  
+corgi config [--editor <editor of your choice>] [--filter-cmd <fzf, peco or something else>]
 ```  
   
 ## Roadmap  
