@@ -46,7 +46,7 @@ Run `brew install drakew/corgi/corgi` and you are good to roll!
 
 #### Binary
 To install the binary:
-1. Download the latest executable from [releases](https://github.com/DrakeW/corgi/releases) based on your system (currently support linux and macOS).
+1. Download the latest package tarball from [releases](https://github.com/DrakeW/corgi/releases) based on your system (currently support linux and macOS).
 2. Unzip the package with `tar -xzvf <downloaded tar.gz file>`
 3. `cd <directory extracted>`, and `chmod a+x ./corgi` to make sure execution bit is turned on by doing 
 4. `ln -s $(pwd)/corgi <your bin folder>/corgi` to create a softlink
