@@ -7,6 +7,7 @@ import (
 	"github.com/fatih/color"
 	"io/ioutil"
 	"os"
+	"time"
 )
 
 type SnippetsMeta struct {
@@ -49,9 +50,18 @@ func (sm *SnippetsMeta) Save() error {
 
 // Save new snippet into snippetsDir and update snippets meta file
 func (sm *SnippetsMeta) SaveNewSnippet(snippet *Snippet, snippetsDir string) error {
+	// check for duplicate
+	if sm.isDuplicate(snippet.Title) {
+		t := time.Now()
+		newTitle := fmt.Sprintf("%s %s", snippet.Title, t.Format(time.RFC822))
+		color.Red("Snippet with title \"%s\" already existed - saving as \"%s\"", snippet.Title, newTitle)
+		snippet.Title = newTitle
+	}
+	// save snippet file
 	if err := snippet.Save(snippetsDir); err != nil {
 		return err
 	}
+	// save to snippets meta file
 	jsonSnippet := &jsonSnippet{
 		Title:   snippet.Title,
 		FileLoc: snippet.fileLoc,
@@ -61,6 +71,15 @@ func (sm *SnippetsMeta) SaveNewSnippet(snippet *Snippet, snippetsDir string) err
 		return err
 	}
 	return nil
+}
+
+func (sm *SnippetsMeta) isDuplicate(title string) bool {
+	for _, s := range sm.Snippets {
+		if s.Title == title {
+			return true
+		}
+	}
+	return false
 }
 
 func (sm *SnippetsMeta) DeleteSnippet(title string) error {
