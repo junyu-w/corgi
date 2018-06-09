@@ -39,6 +39,11 @@ func edit(cmd *cobra.Command, args []string) error {
 	if err := util.Execute(command, os.Stdin, os.Stdout); err != nil {
 		return err
 	}
+	// mark snippetsMeta dirty
+	snippetsMeta.IsMetaDirty = true
+	if err = snippetsMeta.Save(); err != nil {
+		return err
+	}
 	return nil
 }
 

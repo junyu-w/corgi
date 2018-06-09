@@ -98,9 +98,13 @@ func (snippet *Snippet) AskQuestion(options ...interface{}) error {
 	return nil
 }
 
+func getSnippetFileName(title string) string {
+	return fmt.Sprintf("%s.json", strings.Replace(title, " ", "_", -1))
+}
+
 func (snippet *Snippet) Save(snippetsDir string) error {
 	fmt.Printf("Saving snippet \"%s\"... ", snippet.Title)
-	filePath := fmt.Sprintf("%s/%s.json", snippetsDir, strings.Replace(snippet.Title, " ", "_", -1))
+	filePath := fmt.Sprintf("%s/%s", snippetsDir, getSnippetFileName(snippet.Title))
 	snippet.fileLoc = filePath
 	if err := snippet.writeToFile(filePath); err != nil {
 		color.Red("Failure")

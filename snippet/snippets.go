@@ -7,12 +7,14 @@ import (
 	"github.com/fatih/color"
 	"io/ioutil"
 	"os"
+	"path"
 	"time"
 )
 
 type SnippetsMeta struct {
-	Snippets []*jsonSnippet `json:"snippets"`
-	fileLoc  string
+	Snippets    []*jsonSnippet `json:"snippets"`
+	IsMetaDirty bool           `json:"is_meta_dirty"`
+	fileLoc     string
 }
 
 type jsonSnippet struct {
@@ -20,18 +22,46 @@ type jsonSnippet struct {
 	Title   string `json:"title"`
 }
 
+func (sm *SnippetsMeta) syncWithSnippets() error {
+	for _, s := range sm.Snippets {
+		snippet, err := sm.FindSnippet(s.Title)
+		if err != nil {
+			return err
+		}
+		if s.Title != snippet.Title {
+			s.Title = snippet.Title
+			newFileName := getSnippetFileName(s.Title)
+			newFilePath := fmt.Sprintf("%s/%s", path.Dir(s.FileLoc), newFileName)
+			if err = os.Rename(s.FileLoc, newFilePath); err != nil {
+				return err
+			}
+			s.FileLoc = newFilePath
+		}
+	}
+	sm.IsMetaDirty = false
+	if err := sm.Save(); err != nil {
+		return err
+	}
+	return nil
+}
+
 func LoadSnippetsMeta(filePath string) (*SnippetsMeta, error) {
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
 		return nil, err
 	}
-	snippets := &SnippetsMeta{}
-	if err := util.LoadJsonDataFromFile(filePath, snippets); err != nil {
+	snippetsMeta := &SnippetsMeta{}
+	if err := util.LoadJsonDataFromFile(filePath, snippetsMeta); err != nil {
 		return nil, err
 	}
-	if snippets.fileLoc == "" {
-		snippets.fileLoc = filePath
+	if snippetsMeta.fileLoc == "" {
+		snippetsMeta.fileLoc = filePath
 	}
-	return snippets, nil
+	if snippetsMeta.IsMetaDirty {
+		if err := snippetsMeta.syncWithSnippets(); err != nil {
+			return nil, err
+		}
+	}
+	return snippetsMeta, nil
 }
 
 func (sm *SnippetsMeta) Save() error {
