@@ -16,14 +16,14 @@ var editCmd = &cobra.Command{
 
 func edit(cmd *cobra.Command, args []string) error {
 	// load config & snippets
-	conf, snippets, err := loadConfigAndSnippetsMeta()
+	conf, snippetsMeta, err := loadConfigAndSnippetsMeta()
 	if err != nil {
 		return err
 	}
 	// find snippet title
 	var title string
 	if len(args) == 0 {
-		title, err = filterSnippetTitle(conf.FilterCmd, snippets.GetSnippetTitles())
+		title, err = filterSnippetTitle(conf.FilterCmd, snippetsMeta.GetSnippetTitles())
 		if err != nil {
 			return err
 		}
@@ -31,7 +31,7 @@ func edit(cmd *cobra.Command, args []string) error {
 		title = args[0]
 	}
 	// find snippet
-	s, err := snippets.FindSnippet(title)
+	s, err := snippetsMeta.FindSnippet(title)
 	if err != nil {
 		return err
 	}
