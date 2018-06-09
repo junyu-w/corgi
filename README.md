@@ -21,6 +21,7 @@ Execute an existing snippet knowing what command is being run and its output
     - [Install corgi](#install-corgi)
         - [Homebrew](#homebrew)
         - [Binary](#binary)
+        - [Build from scratch](#build-from-scratch)
     - [Install a fuzzy-finder](#install-a-fuzzy-finder)
 - [Features](#features)
     - [Create a snippet](#create-a-snippet)
@@ -45,12 +46,19 @@ Execute an existing snippet knowing what command is being run and its output
 Run `brew install drakew/corgi/corgi` and you are good to roll!
 
 #### Binary
-To install the binary:
+To install the binary directly:
 1. Download the latest package tarball from [releases](https://github.com/DrakeW/corgi/releases) based on your system (currently support linux and macOS).
 2. Unzip the package with `tar -xzvf <downloaded tar.gz file>`
 3. `cd <directory extracted>`, and `chmod a+x ./corgi` to make sure execution bit is turned on by doing 
 4. `ln -s $(pwd)/corgi <your bin folder>/corgi` to create a softlink
 5. Start rolling with `corgi`
+
+#### Build from scratch
+To build the executable from scratch:
+1. Install the most recent versin of `go` language on your system
+2. `git clone git@github.com:DrakeW/corgi.git`
+3. Run `go build -o corgi` inside of the repo
+4. `ln -s $(pwd)/corgi <your bin folder>/corgi`
 
 ### Install a fuzzy-finder
 `corgi` will enable interactive selection if you install a fuzzy finder, the currently supported two are [fzf](https://github.com/junegunn/fzf) and [peco](https://github.com/peco/peco).
