@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"strconv"
 	"time"
 )
 
@@ -82,8 +83,8 @@ func (sm *SnippetsMeta) Save() error {
 func (sm *SnippetsMeta) SaveNewSnippet(snippet *Snippet, snippetsDir string) error {
 	// check for duplicate
 	if sm.isDuplicate(snippet.Title) {
-		t := time.Now()
-		newTitle := fmt.Sprintf("%s (%s)", snippet.Title, t.Format(time.RFC822))
+		t := strconv.FormatInt(time.Now().Unix(), 10)
+		newTitle := fmt.Sprintf("%s-%s", snippet.Title, t)
 		color.Red("Snippet with title \"%s\" already existed - saving as \"%s\"", snippet.Title, newTitle)
 		snippet.Title = newTitle
 	}
