@@ -14,13 +14,13 @@ var listCmd = &cobra.Command{
 
 func list(cmd *cobra.Command, args []string) error {
 	// load config & snippets
-	_, snippets, err := loadConfigAndSnippetsMeta()
+	_, snippetsMeta, err := loadConfigAndSnippetsMeta()
 	if err != nil {
 		return err
 	}
 	// display
 	fmt.Println("Here is the list of corgi snippets saved on your system:")
-	for _, s := range snippets.Snippets {
+	for _, s := range snippetsMeta.Snippets {
 		color.Yellow("- %s", s.Title)
 	}
 	return nil
