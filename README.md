@@ -12,10 +12,10 @@ Current version: **v0.2.2**
 ## Examples
 
 Create a new snippet to automate the commands you run repetitively
-<img src="images/corgi-new.gif" width="700">
+<img src="images/corgi-new.gif" width="900">
 
 Execute an existing snippet knowing what command is being run and its output
-<img src="images/corgi-exec.gif" width="700">
+<img src="images/corgi-exec.gif" width="900">
 
 # Table of Contents
 
