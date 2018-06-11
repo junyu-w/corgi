@@ -27,6 +27,8 @@ Execute an existing snippet knowing what command is being run and its output
     - [Install a fuzzy-finder](#install-a-fuzzy-finder)
 - [Features](#features)
     - [Create a snippet](#create-a-snippet)
+        - [Create from command history](#create-from-command-history)
+        - [Define template fields in snippet](#define-template-fields-in-snippet)
     - [List snippets](#list-snippets)
     - [Execute a snippet](#execute-a-snippet)
         - [Use default value without prompt](#use-default-value-without-prompt)
@@ -73,10 +75,14 @@ corgi provides an interactive CLI interface to create snippet, and you can start
 ```  
 corgi new  
 ```  
+
+#### Create from command history
 If you would like to quickly combine the last couple commands you just executed into a snippet, you could also run  
 ```  
 corgi new --last <number of commands to look back>  
 ```  
+
+#### Define template fields in snippet
 Furthermore, you could also add template fields (with or without default value) to command of a step and reuse the same field, for example:  
 ```  
 tar -xzf <project>.tgz && scp <project> <user=ec2-user>@<ec2-instance-address>:~/
