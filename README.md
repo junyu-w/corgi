@@ -60,9 +60,8 @@ To install the binary directly:
 #### Build from scratch
 To build the executable from scratch:
 1. Install the most recent version of `go` language on your system
-2. `git clone git@github.com:DrakeW/corgi.git`
-3. Run `go build -o corgi` inside of the repo
-4. `ln -s $(pwd)/corgi <your bin folder>/corgi`
+2. `go get github.com/DrakeW/corgi`
+3. `go install github.com/DrakeW/corgi`
 
 ### Install a fuzzy-finder
 `corgi` will enable interactive selection if you install a fuzzy finder, the currently supported two are [fzf](https://github.com/junegunn/fzf) and [peco](https://github.com/peco/peco).
