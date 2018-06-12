@@ -1,14 +1,15 @@
 package snippet
 
 import (
-	"corgi/util"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/fatih/color"
 	"io/ioutil"
 	"strconv"
 	"strings"
+
+	"github.com/DrakeW/corgi/util"
+	"github.com/fatih/color"
 )
 
 type Snippet struct {

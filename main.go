@@ -1,6 +1,6 @@
 package main
 
-import "corgi/cmd"
+import "github.com/DrakeW/corgi/cmd"
 
 func main() {
 	cmd.Execute()

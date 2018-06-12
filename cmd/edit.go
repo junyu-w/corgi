@@ -1,10 +1,11 @@
 package cmd
 
 import (
-	"corgi/util"
 	"fmt"
-	"github.com/spf13/cobra"
 	"os"
+
+	"github.com/DrakeW/corgi/util"
+	"github.com/spf13/cobra"
 )
 
 var editCmd = &cobra.Command{

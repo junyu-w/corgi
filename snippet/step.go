@@ -1,18 +1,19 @@
 package snippet
 
 import (
-	"corgi/util"
 	"fmt"
-	"github.com/fatih/color"
 	"log"
 	"os"
 	"regexp"
 	"strings"
+
+	"github.com/DrakeW/corgi/util"
+	"github.com/fatih/color"
 )
 
 type StepInfo struct {
-	Command           string `json:"command"`
-	Description       string `json:"description,omitempty"`
+	Command     string `json:"command"`
+	Description string `json:"description,omitempty"`
 }
 
 var TemplateParamsRegex = `<([^(<>|\s)]+)>`

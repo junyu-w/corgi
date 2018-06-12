@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"corgi/snippet"
+	"github.com/DrakeW/corgi/snippet"
 	"github.com/spf13/cobra"
 )
 
