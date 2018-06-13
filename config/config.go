@@ -1,7 +1,6 @@
 package config
 
 import (
-	"corgi/util"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -9,6 +8,8 @@ import (
 	"os"
 	"os/exec"
 	"path"
+
+	"github.com/DrakeW/corgi/util"
 )
 
 type Config struct {

@@ -2,13 +2,14 @@ package cmd
 
 import (
 	"bytes"
-	"corgi/config"
-	"corgi/snippet"
-	"corgi/util"
 	"errors"
 	"io"
 	"os"
 	"strings"
+
+	"github.com/DrakeW/corgi/config"
+	"github.com/DrakeW/corgi/snippet"
+	"github.com/DrakeW/corgi/util"
 	"github.com/fatih/color"
 )
 

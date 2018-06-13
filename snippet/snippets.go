@@ -1,15 +1,16 @@
 package snippet
 
 import (
-	"corgi/util"
 	"encoding/json"
 	"fmt"
-	"github.com/fatih/color"
 	"io/ioutil"
 	"os"
 	"path"
 	"strconv"
 	"time"
+
+	"github.com/DrakeW/corgi/util"
+	"github.com/fatih/color"
 )
 
 type SnippetsMeta struct {
