@@ -3,7 +3,6 @@ package snippet
 import (
 	"bufio"
 	"bytes"
-	"errors"
 	"fmt"
 	"os"
 	"path"
@@ -74,7 +73,7 @@ func getHistoryFilePath() (string, error) {
 		histFilePath = getFishHistoryPath(homeDir)
 	} else {
 		shellType = SHELL_UNSUPPORTED
-		return "", errors.New("only Bash, Zsh are currently supported.")
+		return "", fmt.Errorf("%s is not supported, currently supporting Bash, Zsh and Fish", shell)
 	}
 	if _, err := os.Stat(histFilePath); os.IsNotExist(err) {
 		return "", err

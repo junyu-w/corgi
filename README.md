@@ -58,7 +58,7 @@ To install the binary directly:
 5. Start rolling with `corgi`
 
 #### Build from scratch
-To build the executable from scratch:
+If you would like to try some **pre-release** features, try building the executable from scratch:
 1. Install the most recent version of `go` language on your system
 2. `go get github.com/DrakeW/corgi`
 3. `go install github.com/DrakeW/corgi`
@@ -74,6 +74,7 @@ corgi provides an interactive CLI interface to create snippet, and you can start
 ```  
 corgi new  
 ```  
+**NOTE**: To create a snippet, `corgi` will need access to your command history file, which is being set by the `$HISTFILE` env variable. If `$HISTFILE` is not explicitly set, `corgi` will try to infer its location based on currently supported shell types (`bash`, `zsh` and `fish`).
 
 #### Create from command history
 If you would like to quickly combine the last couple commands you just executed into a snippet, you could also run  
