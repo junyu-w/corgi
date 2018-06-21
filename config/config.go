@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"runtime"
 
 	"github.com/DrakeW/corgi/util"
 )
@@ -50,24 +51,37 @@ func getOrCreatePath(loc string, perm os.FileMode, isDir bool) error {
 	return nil
 }
 
-func GetDefaultConfigFile() (string, error) {
-	var defaultConfigFileLoc = fmt.Sprintf("%s/%s", os.Getenv("HOME"), DEFAULT_CONFIG_FILE)
+func GetDefaultConfigHome() string {
+	var configHome string
+	if runtime.GOOS == "darwin" {
+		configHome = os.Getenv("HOME")
+	} else if runtime.GOOS == "linux" {
+		configHome = os.Getenv("XDG_CONFIG_HOME")
+		if configHome == "" {
+			configHome = os.Getenv("HOME")
+		}
+	}
+	return configHome
+}
+
+func GetDefaultConfigFile(configHome string) (string, error) {
+	var defaultConfigFileLoc = path.Join(configHome, DEFAULT_CONFIG_FILE)
 	if err := getOrCreatePath(defaultConfigFileLoc, 0755, false); err != nil {
 		return "", err
 	}
 	return defaultConfigFileLoc, nil
 }
 
-func GetDefaultSnippetsDir() (string, error) {
-	var defaultSnippetsDir = fmt.Sprintf("%s/%s", os.Getenv("HOME"), DEFAULT_SNIPPETS_DIR)
+func GetDefaultSnippetsDir(configHome string) (string, error) {
+	var defaultSnippetsDir = path.Join(configHome, DEFAULT_SNIPPETS_DIR)
 	if err := getOrCreatePath(defaultSnippetsDir, 0755, true); err != nil {
 		return "", err
 	}
 	return defaultSnippetsDir, nil
 }
 
-func GetDefaultSnippetsFile() (string, error) {
-	var defaultSnippetsFile = fmt.Sprintf("%s/%s", os.Getenv("HOME"), DEFAULT_SNIPPETS_FILE)
+func GetDefaultSnippetsFile(configHome string) (string, error) {
+	var defaultSnippetsFile = path.Join(configHome, DEFAULT_SNIPPETS_FILE)
 	if err := getOrCreatePath(defaultSnippetsFile, 0755, false); err != nil {
 		return "", err
 	}
@@ -102,7 +116,10 @@ func GetDefaultFilterCmd() (string, error) {
 }
 
 func Load() (*Config, error) {
-	configFile, err := GetDefaultConfigFile()
+	// find config dir location
+	configHome := GetDefaultConfigHome()
+	// loading other config files
+	configFile, err := GetDefaultConfigFile(configHome)
 	if err != nil {
 		return nil, err
 	}
@@ -113,13 +130,13 @@ func Load() (*Config, error) {
 	// if config file has no content, initialize it with default
 	if config.IsNew() {
 		// set default snippets file
-		snippetsFile, err := GetDefaultSnippetsFile()
+		snippetsFile, err := GetDefaultSnippetsFile(configHome)
 		if err != nil {
 			return nil, err
 		}
 		config.SnippetsFile = snippetsFile
 		// set default snippets dir
-		snippetsDir, err := GetDefaultSnippetsDir()
+		snippetsDir, err := GetDefaultSnippetsDir(configHome)
 		if err != nil {
 			return nil, err
 		}
@@ -143,8 +160,9 @@ func Load() (*Config, error) {
 }
 
 func (c *Config) Save() error {
+	configHome := GetDefaultConfigHome()
 	// get config file
-	confFile, err := GetDefaultConfigFile()
+	confFile, err := GetDefaultConfigFile(configHome)
 	if err != nil {
 		return err
 	}
@@ -152,10 +170,8 @@ func (c *Config) Save() error {
 	if err != nil {
 		return err
 	}
-	if err = ioutil.WriteFile(confFile, data, 0644); err != nil {
-		return err
-	}
-	return nil
+	err = ioutil.WriteFile(confFile, data, 0644)
+	return err
 }
 
 func (c *Config) IsNew() bool {

@@ -17,3 +17,6 @@
 
 # build
 build/*
+
+# vendor
+vendor/*

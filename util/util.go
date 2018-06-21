@@ -3,12 +3,13 @@ package util
 import (
 	"encoding/json"
 	"errors"
-	"github.com/chzyer/readline"
 	"io"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/chzyer/readline"
 )
 
 const (
