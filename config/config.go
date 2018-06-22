@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/exec"
 	"path"
-	"runtime"
 
 	"github.com/DrakeW/corgi/util"
 )
@@ -21,9 +20,9 @@ type Config struct {
 }
 
 const (
-	DEFAULT_CONFIG_FILE     = ".corgi/corgi_conf.json"
-	DEFAULT_SNIPPETS_DIR    = ".corgi/snippets"
-	DEFAULT_SNIPPETS_FILE   = ".corgi/snippets.json"
+	DEFAULT_CONFIG_FILE     = "corgi_conf.json"
+	DEFAULT_SNIPPETS_DIR    = "snippets"
+	DEFAULT_SNIPPETS_FILE   = "snippets.json"
 	DEFAULT_EDITOR          = "vim"
 	DEFAULT_FILTER_CMD_FZF  = "fzf"
 	DEFAULT_FILTER_CMD_PECO = "peco"
@@ -53,14 +52,15 @@ func getOrCreatePath(loc string, perm os.FileMode, isDir bool) error {
 
 func GetDefaultConfigHome() string {
 	var configHome string
-	if runtime.GOOS == "darwin" {
-		configHome = os.Getenv("HOME")
-	} else if runtime.GOOS == "linux" {
-		configHome = os.Getenv("XDG_CONFIG_HOME")
-		if configHome == "" {
-			configHome = os.Getenv("HOME")
-		}
+	var isPresent bool
+
+	configHome, isPresent = os.LookupEnv("XDG_CONFIG_HOME")
+	if isPresent {
+		configHome = path.Join(configHome, "corgi")
+	} else {
+		configHome = path.Join(os.Getenv("HOME"), ".corgi")
 	}
+
 	return configHome
 }
 
