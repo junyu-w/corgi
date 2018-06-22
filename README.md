@@ -37,6 +37,8 @@ Execute an existing snippet knowing what command is being run and its output
     - [Edit a snippet](#edit-a-snippet)
     - [Describe a snippet](#describe-a-snippet)
     - [Share snippets](#share-snippets)
+        - [Import snippets](#import-snippets)
+        - [Export snippets to JSON and shell script](#export-snippets-to-json-and-shell-script)
     - [Remove a snippet](#remove-a-snippet)
     - [Configure corgi](#configure-corgi)
 - [Roadmap](#roadmap)
@@ -146,15 +148,21 @@ corgi describe [<title of the snippet>]
 And it will print out each step of the snippet so that you don't have to memorize them.
 
 ### Share snippets
+
+#### Import snippets
 If someone shares his/her snippet json file(s) with you, you can import it by running
 ```
 corgi import <snippet json file 1> [<snippet json file 2>...]
 ```
+#### Export snippets to `json` and `shell` script
 And similarly, if you already have a workflow defined in a snippet, you can easily share it by exporting via (without title will yield interactive title selection)
 ```
-corgi export [<title of the snippet>] [-o <output file path>]
+corgi export [<title of the snippet>] [-o <output file path>] [-t <file type: json|shell>]
 ```
-and send the json file to another person
+By default a json file will be exported, but you can also export a shell script that can run in an environment where `corgi` is not installed, while still having the same organized step-by-step `corgi` experience. To export snippet to a shell script, just do
+```
+corgi export [<title of the snippet>] -t shell
+```
 
 ### Remove a snippet
 You can remove a snippet by running (without title will yield interactive title selection)

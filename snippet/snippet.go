@@ -12,6 +12,11 @@ import (
 	"github.com/fatih/color"
 )
 
+const (
+	EXPORT_TYPE_JSON  = "json"
+	EXPORT_TYPE_SHELL = "shell"
+)
+
 type Snippet struct {
 	Title   string      `json:"title"`
 	Steps   []*StepInfo `json:"steps"`
@@ -115,14 +120,41 @@ func (snippet *Snippet) Save(snippetsDir string) error {
 	return nil
 }
 
-func (snippet *Snippet) Export(outputPath string) error {
+func (snippet *Snippet) Export(outputPath string, fileType string) error {
 	fmt.Printf("Exporting snippet %s... ", snippet.Title)
-	if err := snippet.writeToFile(outputPath); err != nil {
+	var err error
+	if fileType == EXPORT_TYPE_SHELL {
+		shellSript := snippet.ConvertToShellScript()
+		err = ioutil.WriteFile(outputPath, []byte(shellSript), 0744)
+	} else if fileType == EXPORT_TYPE_JSON {
+		err = snippet.writeToFile(outputPath)
+	} else {
+		err = fmt.Errorf("export file type \"%s\" not supported", fileType)
+	}
+	if err != nil {
 		color.Red("Failure")
 		return err
 	}
 	color.Green("Success")
 	return nil
+}
+
+func (snippet *Snippet) ConvertToShellScript() string {
+	templateFieldMap := snippet.BuildTemplateFieldMap()
+	shellCmds := []string{}
+	// headline
+	shellCmds = append(shellCmds, "#!/bin/bash")
+	// convert title
+	titleShell := fmt.Sprintf("echo -e '%sStart executing snippet \"%s\"...%s'\n", util.SHELL_GREEN, snippet.Title, util.SHELL_NO_COLOR)
+	shellCmds = append(shellCmds, titleShell)
+	// convert each step
+	for idx, step := range snippet.Steps {
+		stepCount := idx + 1
+		stepIndexShell := fmt.Sprintf("echo -e '\n%sStep %d:%s %s%s'", util.SHELL_GREEN, stepCount, util.SHELL_YELLOW, step.Description, util.SHELL_NO_COLOR)
+		stepShell := step.ConvertToShellScript(&templateFieldMap)
+		shellCmds = append(shellCmds, stepIndexShell, stepShell, "\n")
+	}
+	return strings.Join(shellCmds, "\n")
 }
 
 func (snippet *Snippet) writeToFile(filePath string) error {

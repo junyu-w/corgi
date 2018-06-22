@@ -46,6 +46,29 @@ func (step *StepInfo) AskQuestion(options ...interface{}) error {
 	return nil
 }
 
+func (step *StepInfo) ConvertToShellScript(templates *TemplateFieldMap) string {
+	shellCmds := make([]string, 0)
+	templateFieldsMap := ParseTemplateFieldsMap(step.Command)
+	for field := range templateFieldsMap {
+		existingTf, _ := (*templates)[field]
+		// add user input prompt
+		if !existingTf.Asked {
+			inputPromptShell := fmt.Sprintf("read -p \"%sEnter value for <%s>:%s\" %s", util.SHELL_GREEN, field, util.SHELL_NO_COLOR, field)
+			existingTf.Asked = true
+			shellCmds = append(shellCmds, inputPromptShell)
+		}
+	}
+	// add command execution part
+	re := regexp.MustCompile(TemplateParamsRegex)
+	executeShell := re.ReplaceAllStringFunc(step.Command, func(sub string) string {
+		field, _ := getParamNameAndValue(sub)
+		return fmt.Sprintf("$%s", field)
+	})
+	runningPromptShell := fmt.Sprintf("echo -e '%sRunning: %s%s%s'", util.SHELL_GREEN, util.SHELL_YELLOW, executeShell, util.SHELL_NO_COLOR)
+	shellCmds = append(shellCmds, runningPromptShell, executeShell)
+	return strings.Join(shellCmds, "\n")
+}
+
 // TODO: add concurrent execution
 // valid options include 'useDefaultVal' indicated by the --use-default flag
 func (step *StepInfo) Execute(templates *TemplateFieldMap, options ...interface{}) error {

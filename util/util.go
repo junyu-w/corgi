@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"path"
 	"strings"
 
 	"github.com/chzyer/readline"
@@ -16,6 +17,13 @@ const (
 	JSON_MARSHAL_PREFIX = ""
 	JSON_MARSHAL_INDENT = "  "
 	STEP_RANGE_SEP      = "-"
+)
+
+const (
+	SHELL_RED      = "\033[0;31m"
+	SHELL_GREEN    = "\033[0;32m"
+	SHELL_YELLOW   = "\033[1;33m"
+	SHELL_NO_COLOR = "\033[0m"
 )
 
 func LoadJsonDataFromFile(filePath string, object interface{}) error {
@@ -65,6 +73,26 @@ func Execute(command string, r io.Reader, w io.Writer) error {
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
 		return err
+	}
+	return nil
+}
+
+func GetOrCreatePath(loc string, perm os.FileMode, isDir bool) error {
+	dirPath := path.Dir(loc)
+	if isDir {
+		dirPath = loc
+	}
+	if _, err := os.Stat(loc); os.IsNotExist(err) {
+		if err = os.MkdirAll(dirPath, perm); err != nil {
+			return err
+		}
+		if !isDir {
+			f, err := os.Create(loc)
+			if err != nil {
+				return err
+			}
+			defer f.Close()
+		}
 	}
 	return nil
 }
