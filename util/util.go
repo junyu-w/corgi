@@ -19,6 +19,13 @@ const (
 	STEP_RANGE_SEP      = "-"
 )
 
+const (
+	SHELL_RED      = "\033[0;31m"
+	SHELL_GREEN    = "\033[0;32m"
+	SHELL_YELLOW   = "\033[1;33m"
+	SHELL_NO_COLOR = "\033[0m"
+)
+
 func LoadJsonDataFromFile(filePath string, object interface{}) error {
 	data, err := ioutil.ReadFile(filePath)
 	if err != nil {

@@ -53,7 +53,7 @@ func (step *StepInfo) ConvertToShellScript(templates *TemplateFieldMap) string {
 		existingTf, _ := (*templates)[field]
 		// add user input prompt
 		if !existingTf.Asked {
-			inputPromptShell := fmt.Sprintf("read -p \"Enter value for <%s>:\" %s", field, field)
+			inputPromptShell := fmt.Sprintf("read -p \"%sEnter value for <%s>:%s\" %s", util.SHELL_GREEN, field, util.SHELL_NO_COLOR, field)
 			existingTf.Asked = true
 			shellCmds = append(shellCmds, inputPromptShell)
 		}
@@ -64,7 +64,7 @@ func (step *StepInfo) ConvertToShellScript(templates *TemplateFieldMap) string {
 		field, _ := getParamNameAndValue(sub)
 		return fmt.Sprintf("$%s", field)
 	})
-	runningPromptShell := fmt.Sprintf("echo 'Running: %s'", executeShell)
+	runningPromptShell := fmt.Sprintf("echo -e '%sRunning: %s%s%s'", util.SHELL_GREEN, util.SHELL_YELLOW, executeShell, util.SHELL_NO_COLOR)
 	shellCmds = append(shellCmds, runningPromptShell, executeShell)
 	return strings.Join(shellCmds, "\n")
 }

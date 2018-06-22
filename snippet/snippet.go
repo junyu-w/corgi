@@ -145,12 +145,12 @@ func (snippet *Snippet) ConvertToShellScript() string {
 	// headline
 	shellCmds = append(shellCmds, "#!/bin/bash")
 	// convert title
-	titleShell := fmt.Sprintf("echo 'Start executing snippet \"%s\"...'\n", snippet.Title)
+	titleShell := fmt.Sprintf("echo -e '%sStart executing snippet \"%s\"...%s'\n", util.SHELL_GREEN, snippet.Title, util.SHELL_NO_COLOR)
 	shellCmds = append(shellCmds, titleShell)
 	// convert each step
 	for idx, step := range snippet.Steps {
 		stepCount := idx + 1
-		stepIndexShell := fmt.Sprintf("echo '\nStep %d: %s'", stepCount, step.Description)
+		stepIndexShell := fmt.Sprintf("echo -e '\n%sStep %d:%s %s%s'", util.SHELL_GREEN, stepCount, util.SHELL_YELLOW, step.Description, util.SHELL_NO_COLOR)
 		stepShell := step.ConvertToShellScript(&templateFieldMap)
 		shellCmds = append(shellCmds, stepIndexShell, stepShell, "\n")
 	}
