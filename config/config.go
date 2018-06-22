@@ -31,26 +31,6 @@ const (
 
 var MissingDefaultFilterCmdError = errors.New("missing default filter cmd")
 
-func getOrCreatePath(loc string, perm os.FileMode, isDir bool) error {
-	dirPath := path.Dir(loc)
-	if isDir {
-		dirPath = loc
-	}
-	if _, err := os.Stat(loc); os.IsNotExist(err) {
-		if err = os.MkdirAll(dirPath, perm); err != nil {
-			return err
-		}
-		if !isDir {
-			f, err := os.Create(loc)
-			if err != nil {
-				return err
-			}
-			defer f.Close()
-		}
-	}
-	return nil
-}
-
 func GetDefaultConfigHome() string {
 	var configHome string
 	if runtime.GOOS == "darwin" {
@@ -66,7 +46,7 @@ func GetDefaultConfigHome() string {
 
 func GetDefaultConfigFile(configHome string) (string, error) {
 	var defaultConfigFileLoc = path.Join(configHome, DEFAULT_CONFIG_FILE)
-	if err := getOrCreatePath(defaultConfigFileLoc, 0755, false); err != nil {
+	if err := util.GetOrCreatePath(defaultConfigFileLoc, 0755, false); err != nil {
 		return "", err
 	}
 	return defaultConfigFileLoc, nil
@@ -74,7 +54,7 @@ func GetDefaultConfigFile(configHome string) (string, error) {
 
 func GetDefaultSnippetsDir(configHome string) (string, error) {
 	var defaultSnippetsDir = path.Join(configHome, DEFAULT_SNIPPETS_DIR)
-	if err := getOrCreatePath(defaultSnippetsDir, 0755, true); err != nil {
+	if err := util.GetOrCreatePath(defaultSnippetsDir, 0755, true); err != nil {
 		return "", err
 	}
 	return defaultSnippetsDir, nil
@@ -82,7 +62,7 @@ func GetDefaultSnippetsDir(configHome string) (string, error) {
 
 func GetDefaultSnippetsFile(configHome string) (string, error) {
 	var defaultSnippetsFile = path.Join(configHome, DEFAULT_SNIPPETS_FILE)
-	if err := getOrCreatePath(defaultSnippetsFile, 0755, false); err != nil {
+	if err := util.GetOrCreatePath(defaultSnippetsFile, 0755, false); err != nil {
 		return "", err
 	}
 	return defaultSnippetsFile, nil

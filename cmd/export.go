@@ -2,8 +2,11 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"path"
+	"strings"
+
+	"github.com/DrakeW/corgi/snippet"
+	"github.com/spf13/cobra"
 )
 
 var exportCmd = &cobra.Command{
@@ -14,6 +17,7 @@ var exportCmd = &cobra.Command{
 }
 
 var outputFile string
+var fileType string
 
 func export(cmd *cobra.Command, args []string) error {
 	conf, snippetsMeta, err := loadConfigAndSnippetsMeta()
@@ -36,15 +40,19 @@ func export(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	if outputFile == "" {
-		outputFile = fmt.Sprintf("./%s", path.Base(s.GetFilePath()))
+		corgiFileName := path.Base(s.GetFilePath())
+		if fileType == snippet.EXPORT_TYPE_CORGI {
+			outputFile = fmt.Sprintf("./%s", corgiFileName)
+		} else {
+			outputFile = fmt.Sprintf("./%s", strings.Split(corgiFileName, ".")[0])
+		}
 	}
-	if err = s.Export(outputFile); err != nil {
-		return err
-	}
-	return nil
+	err = s.Export(outputFile, fileType)
+	return err
 }
 
 func init() {
 	exportCmd.Flags().StringVarP(&outputFile, "output", "o", "", "Specify the output path of the snippet")
+	exportCmd.Flags().StringVarP(&fileType, "type", "t", snippet.EXPORT_TYPE_CORGI, fmt.Sprintf("Choose export file type. Allowed values are: \"%s\", \"%s\".", snippet.EXPORT_TYPE_CORGI, snippet.EXPORT_TYPE_SHELL))
 	rootCmd.AddCommand(exportCmd)
 }
