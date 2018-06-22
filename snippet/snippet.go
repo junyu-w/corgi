@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	EXPORT_TYPE_CORGI = "corgi-snippet"
+	EXPORT_TYPE_JSON  = "json"
 	EXPORT_TYPE_SHELL = "shell"
 )
 
@@ -126,7 +126,7 @@ func (snippet *Snippet) Export(outputPath string, fileType string) error {
 	if fileType == EXPORT_TYPE_SHELL {
 		shellSript := snippet.ConvertToShellScript()
 		err = ioutil.WriteFile(outputPath, []byte(shellSript), 0744)
-	} else if fileType == EXPORT_TYPE_CORGI {
+	} else if fileType == EXPORT_TYPE_JSON {
 		err = snippet.writeToFile(outputPath)
 	} else {
 		err = fmt.Errorf("export file type \"%s\" not supported", fileType)

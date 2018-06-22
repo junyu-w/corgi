@@ -41,7 +41,7 @@ func export(cmd *cobra.Command, args []string) error {
 	}
 	if outputFile == "" {
 		corgiFileName := path.Base(s.GetFilePath())
-		if fileType == snippet.EXPORT_TYPE_CORGI {
+		if fileType == snippet.EXPORT_TYPE_JSON {
 			outputFile = fmt.Sprintf("./%s", corgiFileName)
 		} else {
 			outputFile = fmt.Sprintf("./%s", strings.Split(corgiFileName, ".")[0])
@@ -53,6 +53,6 @@ func export(cmd *cobra.Command, args []string) error {
 
 func init() {
 	exportCmd.Flags().StringVarP(&outputFile, "output", "o", "", "Specify the output path of the snippet")
-	exportCmd.Flags().StringVarP(&fileType, "type", "t", snippet.EXPORT_TYPE_CORGI, fmt.Sprintf("Choose export file type. Allowed values are: \"%s\", \"%s\".", snippet.EXPORT_TYPE_CORGI, snippet.EXPORT_TYPE_SHELL))
+	exportCmd.Flags().StringVarP(&fileType, "type", "t", snippet.EXPORT_TYPE_JSON, fmt.Sprintf("Choose export file type. Allowed values are: \"%s\", \"%s\".", snippet.EXPORT_TYPE_JSON, snippet.EXPORT_TYPE_SHELL))
 	rootCmd.AddCommand(exportCmd)
 }
