@@ -164,6 +164,8 @@ By default a json file will be exported, but you can also export a shell script 
 corgi export [<title of the snippet>] -t shell
 ```
 
+<img src="images/corgi-export-shell.gif" width="700">
+
 ### Remove a snippet
 You can remove a snippet by running (without title will yield interactive title selection)
 ```
