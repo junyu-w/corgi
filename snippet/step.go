@@ -64,7 +64,7 @@ func (step *StepInfo) ConvertToShellScript(templates *TemplateFieldMap) string {
 		field, _ := getParamNameAndValue(sub)
 		return fmt.Sprintf("$%s", field)
 	})
-	runningPromptShell := fmt.Sprintf("echo -e '%sRunning: %s%s%s'", util.SHELL_GREEN, util.SHELL_YELLOW, executeShell, util.SHELL_NO_COLOR)
+	runningPromptShell := fmt.Sprintf("echo -e \"%sRunning: %s%s%s\"", util.SHELL_GREEN, util.SHELL_YELLOW, executeShell, util.SHELL_NO_COLOR)
 	shellCmds = append(shellCmds, runningPromptShell, executeShell)
 	return strings.Join(shellCmds, "\n")
 }
