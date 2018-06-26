@@ -53,8 +53,13 @@ func (step *StepInfo) ConvertToShellScript(templates *TemplateFieldMap) string {
 		existingTf, _ := (*templates)[field]
 		// add user input prompt
 		if !existingTf.Asked {
-			inputPromptShell := fmt.Sprintf("read -p \"%sEnter value for <%s> (default: %s): %s\" %s", util.SHELL_GREEN, field, existingTf.Value, util.SHELL_NO_COLOR, field)
-			defaultValueShell := fmt.Sprintf("%s=${%s:-%s}", field, field, existingTf.Value)
+			defaultValueShell := ""
+			defaultValPrompt := "none"
+			if existingTf.Value != "" {
+				defaultValPrompt = existingTf.Value
+				defaultValueShell = fmt.Sprintf("%s=${%s:-%s}", field, field, existingTf.Value)
+			}
+			inputPromptShell := fmt.Sprintf("read -p \"%sEnter value for <%s> (default: %s): %s\" %s", util.SHELL_GREEN, field, defaultValPrompt, util.SHELL_NO_COLOR, field)
 			existingTf.Asked = true
 			shellCmds = append(shellCmds, inputPromptShell, defaultValueShell)
 		}
