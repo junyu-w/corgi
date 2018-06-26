@@ -53,7 +53,7 @@ Run `brew install drakew/corgi/corgi` and you are good to roll!
 
 ##### Upgrade Instruction
 
-Upgarde `corgi` from an old version by doing `brew upgrade drakew/corgi/corgi`
+Upgrade `corgi` from an old version by doing `brew upgrade drakew/corgi/corgi`
 
 If you saw this error `Error: corgi <old version> is already installed` during installation or upgrade. Run the following commands to re-install:
 ```
