@@ -51,6 +51,15 @@ Execute an existing snippet knowing what command is being run and its output
 #### Homebrew
 Run `brew install drakew/corgi/corgi` and you are good to roll!
 
+##### Upgrade Instruction
+
+Upgarde `corgi` from an old version by doing `brew upgrade drakew/corgi/corgi`
+
+If you saw this error `Error: corgi <old version> is already installed` during installation or upgrade. Run the following commands to re-install:
+```
+brew unlink corgi && brew uninstall corgi && brew install drakew/corgi/corgi
+```
+
 #### Binary
 To install the binary directly:
 1. Download the latest package tarball from [releases](https://github.com/DrakeW/corgi/releases) based on your system (currently support linux and macOS).
