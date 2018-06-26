@@ -1,11 +1,12 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"os"
+
+	"github.com/spf13/cobra"
 )
 
-var appVersion = "v0.2.2"
+var appVersion = "v0.2.3"
 
 var rootCmd = &cobra.Command{
 	Use:          "corgi",

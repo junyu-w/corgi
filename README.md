@@ -8,7 +8,7 @@
 
 Corgi is a command-line tool that helps with your repetitive command usages by organizing them into reusable snippet. See usage by simply running `corgi` or `corgi --help`
 
-Current version: **v0.2.2**
+Current version: **v0.2.3**
 ## Examples
 
 Create a new snippet to automate the commands you run repetitively
@@ -38,7 +38,7 @@ Execute an existing snippet knowing what command is being run and its output
     - [Describe a snippet](#describe-a-snippet)
     - [Share snippets](#share-snippets)
         - [Import snippets](#import-snippets)
-        - [Export snippets to JSON and shell script](#export-snippets-to-json-and-shell-script)
+        - [Export snippets to JSON and SHELL script](#export-snippets-to-json-and-shell-script)
     - [Remove a snippet](#remove-a-snippet)
     - [Configure corgi](#configure-corgi)
 - [Roadmap](#roadmap)
