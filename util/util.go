@@ -67,7 +67,12 @@ func Scan(prompt string, defaultInp string, historyFile string) (string, error) 
 }
 
 func Execute(command string, r io.Reader, w io.Writer) error {
-	cmd := exec.Command("sh", "-c", strings.TrimSpace(command))
+	// Retrieve the default shell. Otherwise, fallback to `sh`
+	defaultShell, isPresent := os.LookupEnv("SHELL")
+	if !isPresent {
+		defaultShell = "sh"
+	}
+	cmd := exec.Command(defaultShell, "-c", strings.TrimSpace(command))
 	cmd.Stdin = r
 	cmd.Stdout = w
 	cmd.Stderr = os.Stderr
