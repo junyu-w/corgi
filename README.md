@@ -29,6 +29,7 @@ Execute an existing snippet knowing what command is being run and its output
     - [Create a snippet](#create-a-snippet)
         - [Create from command history](#create-from-command-history)
         - [Define template fields in snippet](#define-template-fields-in-snippet)
+        - [Multi-line command support](#multi-line-command-support)
     - [List snippets](#list-snippets)
     - [Execute a snippet](#execute-a-snippet)
         - [Use default value without prompt](#use-default-value-without-prompt)
@@ -102,6 +103,17 @@ And you will be prompted to enter values for those fields when the snippet execu
 
 Also if you have field with **multiple default values**, the latest appearance will take precedence over the previous values.
 
+#### Multi-line command support
+`corgi` also supports multi-line command where each line has trailling character `"\"`. For example,
+```
+Step 1:
+Command: docker run -p 2181:2181 -p 9092:9092 \
+> --env ADVERTISED_HOST="172.17.0.1" \
+> --env ADVERTISED_PORT=9092 \
+> --env NUM_PARTITIONS="2" \
+> --env TOPICS="topic1,topic2" \
+> spotify/kafka
+```
 
 ### List snippets  
 To view all snippets saved on your system, run  
