@@ -17,6 +17,7 @@ const (
 	JSON_MARSHAL_PREFIX = ""
 	JSON_MARSHAL_INDENT = "  "
 	STEP_RANGE_SEP      = "-"
+	NEXT_LINE_SUFFIX    = "\\"
 )
 
 const (
@@ -62,8 +63,8 @@ func Scan(prompt string, defaultInp string, historyFile string) (string, error) 
 		if line == "" {
 			continue
 		}
-		if strings.HasSuffix(line, "\\") {
-			cmds = append(cmds, strings.TrimRight(line, "\\"))
+		if strings.HasSuffix(line, NEXT_LINE_SUFFIX) {
+			cmds = append(cmds, strings.TrimRight(line, NEXT_LINE_SUFFIX))
 			rl.SetPrompt("> ")
 			continue
 		} else {
