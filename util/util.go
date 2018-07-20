@@ -52,6 +52,7 @@ func Scan(prompt string, defaultInp string, historyFile string) (string, error) 
 	}
 	defer rl.Close()
 
+	var cmds []string
 	for {
 		line, err := rl.ReadlineWithDefault(defaultInp)
 		if err != nil {
@@ -61,7 +62,18 @@ func Scan(prompt string, defaultInp string, historyFile string) (string, error) 
 		if line == "" {
 			continue
 		}
-		return line, nil
+		if strings.HasSuffix(line, "\\") {
+			cmds = append(cmds, strings.TrimRight(line, "\\"))
+			rl.SetPrompt("> ")
+			continue
+		} else {
+			cmds = append(cmds, line)
+		}
+		cmd := strings.Join(cmds, " ")
+		cmds = cmds[:0]
+		rl.SetPrompt(prompt)
+		rl.SaveHistory(cmd)
+		return cmd, nil
 	}
 	return "", errors.New("cancelled")
 }
