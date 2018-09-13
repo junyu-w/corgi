@@ -16,7 +16,7 @@ type StepInfo struct {
 	Description string `json:"description,omitempty"`
 }
 
-var TemplateParamsRegex = `<([^(<>|\s)]+)>`
+var TemplateParamsRegex = `<([^(<>)]+)>`
 
 type TemplateField struct {
 	FieldName string
@@ -108,8 +108,8 @@ func getParamNameAndValue(p string) (string, string) {
 	// fetch field and default value (if there's any)
 	var field, val string
 	if strings.Contains(p, "=") {
-		field = strings.Split(p, "=")[0]
-		val = strings.Split(p, "=")[1]
+		field = strings.SplitN(p, "=", 2)[0]
+		val = strings.SplitN(p, "=", 2)[1]
 	} else {
 		field = p
 	}
