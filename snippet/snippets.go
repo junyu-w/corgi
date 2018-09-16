@@ -17,6 +17,7 @@ type SnippetsMeta struct {
 	Snippets    []*jsonSnippet `json:"snippets"`
 	IsMetaDirty bool           `json:"is_meta_dirty"`
 	fileLoc     string
+	snippetsDir string
 }
 
 type jsonSnippet struct {
@@ -24,46 +25,33 @@ type jsonSnippet struct {
 	Title   string `json:"title"`
 }
 
-func (sm *SnippetsMeta) syncWithSnippets() error {
+func (sm *SnippetsMeta) SetFileLoc(fileLoc string) {
+	sm.fileLoc = fileLoc
+}
+
+func (sm *SnippetsMeta) SetSnippetsDir(path string) {
+	sm.snippetsDir = path
+}
+
+func (sm *SnippetsMeta) SyncWithSnippets() error {
 	for _, s := range sm.Snippets {
 		snippet, err := sm.FindSnippet(s.Title)
-		if err != nil {
-			return err
-		}
-		if s.Title != snippet.Title {
+		// sync name and path
+		newFileName := getSnippetFileName(s.Title)
+		newFilePath := path.Join(sm.snippetsDir, newFileName)
+		if err == nil && s.Title != snippet.Title {
 			s.Title = snippet.Title
-			newFileName := getSnippetFileName(s.Title)
-			newFilePath := fmt.Sprintf("%s/%s", path.Dir(s.FileLoc), newFileName)
 			if err = os.Rename(s.FileLoc, newFilePath); err != nil {
 				return err
 			}
-			s.FileLoc = newFilePath
 		}
+		s.FileLoc = newFilePath
 	}
 	sm.IsMetaDirty = false
 	if err := sm.Save(); err != nil {
 		return err
 	}
 	return nil
-}
-
-func LoadSnippetsMeta(filePath string) (*SnippetsMeta, error) {
-	if _, err := os.Stat(filePath); os.IsNotExist(err) {
-		return nil, err
-	}
-	snippetsMeta := &SnippetsMeta{}
-	if err := util.LoadJsonDataFromFile(filePath, snippetsMeta); err != nil {
-		return nil, err
-	}
-	if snippetsMeta.fileLoc == "" {
-		snippetsMeta.fileLoc = filePath
-	}
-	if snippetsMeta.IsMetaDirty {
-		if err := snippetsMeta.syncWithSnippets(); err != nil {
-			return nil, err
-		}
-	}
-	return snippetsMeta, nil
 }
 
 func (sm *SnippetsMeta) Save() error {
@@ -81,7 +69,7 @@ func (sm *SnippetsMeta) Save() error {
 }
 
 // Save new snippet into snippetsDir and update snippets meta file
-func (sm *SnippetsMeta) SaveNewSnippet(snippet *Snippet, snippetsDir string) error {
+func (sm *SnippetsMeta) SaveNewSnippet(snippet *Snippet) error {
 	// check for duplicate
 	if sm.isDuplicate(snippet.Title) {
 		t := strconv.FormatInt(time.Now().Unix(), 10)
@@ -90,7 +78,7 @@ func (sm *SnippetsMeta) SaveNewSnippet(snippet *Snippet, snippetsDir string) err
 		snippet.Title = newTitle
 	}
 	// save snippet file
-	if err := snippet.Save(snippetsDir); err != nil {
+	if err := snippet.Save(sm.snippetsDir); err != nil {
 		return err
 	}
 	// save to snippets meta file
@@ -158,7 +146,7 @@ func (sm *SnippetsMeta) findJsonSnippetIndex(title string) (int, error) {
 		}
 	}
 	if idx == -1 {
-		return idx, fmt.Errorf("could not find snippet with name: %s", title)
+		return idx, fmt.Errorf("Could not find snippet with name: %s", title)
 	}
 	return idx, nil
 }

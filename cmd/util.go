@@ -22,7 +22,7 @@ func loadConfigAndSnippetsMeta() (*config.Config, *snippet.SnippetsMeta, error) 
 		return nil, nil, err
 	}
 	// Load snippets
-	snippets, err := snippet.LoadSnippetsMeta(conf.SnippetsFile)
+	snippets, err := conf.LoadSnippetsMeta()
 	if err != nil {
 		return nil, nil, err
 	}

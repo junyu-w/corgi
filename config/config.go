@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"path"
 
+	"github.com/DrakeW/corgi/snippet"
 	"github.com/DrakeW/corgi/util"
 )
 
@@ -137,6 +138,24 @@ func Load() (*Config, error) {
 		config.Save()
 	}
 	return config, nil
+}
+
+func (c *Config) LoadSnippetsMeta() (*snippet.SnippetsMeta, error) {
+	if _, err := os.Stat(c.SnippetsFile); os.IsNotExist(err) {
+		return nil, err
+	}
+	snippetsMeta := &snippet.SnippetsMeta{}
+	if err := util.LoadJsonDataFromFile(c.SnippetsFile, snippetsMeta); err != nil {
+		return nil, err
+	}
+	snippetsMeta.SetFileLoc(c.SnippetsFile)
+	snippetsMeta.SetSnippetsDir(c.SnippetsDir)
+	if snippetsMeta.IsMetaDirty {
+		if err := snippetsMeta.SyncWithSnippets(); err != nil {
+			return nil, err
+		}
+	}
+	return snippetsMeta, nil
 }
 
 func (c *Config) Save() error {
