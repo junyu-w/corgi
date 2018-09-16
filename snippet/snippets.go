@@ -37,7 +37,7 @@ func (sm *SnippetsMeta) SyncWithSnippets() error {
 	for _, s := range sm.Snippets {
 		snippet, err := sm.FindSnippet(s.Title)
 		// sync name and path
-		newFileName := getSnippetFileName(s.Title)
+		newFileName := getSnippetFileName(snippet.Title)
 		newFilePath := path.Join(sm.snippetsDir, newFileName)
 		if err == nil && s.Title != snippet.Title {
 			s.Title = snippet.Title
