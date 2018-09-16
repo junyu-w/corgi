@@ -42,6 +42,9 @@ Execute an existing snippet knowing what command is being run and its output
         - [Export snippets to JSON and SHELL script](#export-snippets-to-json-and-shell-script)
     - [Remove a snippet](#remove-a-snippet)
     - [Configure corgi](#configure-corgi)
+        - [Choose your favorite text editor](#choose-your-favorite-text-editor)
+        - [Choose your favorite fuzzy matcher](#choose-your-favorite-fuzzy-matcher)
+        - [Choose the directory to store all your snippets](#choose-the-directory-to-store-all-your-snippets)
 - [Roadmap](#roadmap)
 - [Note](#note)
   
@@ -194,11 +197,25 @@ corgi remove [<title of the snippet>]
 ```
   
 ### Configure `corgi` 
-You can configure your text editor choice (default is `vim`) for snippet editing, and filter tool for interactive snippet selection. To configure the corgi CLI, run  
+You can configure corgi to use your existing tools or services and make it more usable (and fluffy)
+
+#### Choose your favorite text editor
+You can configure your text editor choice (default is `vim`) for snippet editing, simply run  
 ```  
-corgi config [--editor <editor of your choice>] [--filter-cmd <fzf, peco or something else>]
+corgi config --editor <editor of your choice, eg. vim, subl, atom, code etc>
+```
+#### Choose your favorite fuzzy matcher
+You can also choose your favorite filter tool (default is 'fzf') for interactive snippet selection by running
 ```  
-  
+corgi config --filter-cmd <fuzzy finder like fzf, peco etc>
+```
+#### Choose the directory to store all your snippets
+You can configure the path to store all your snippets by running
+```  
+corgi config --snippets-dir <path, eg. ~/Dropbox/my_corgi_snippets>
+```
+This way, you can use online file sync/backup services like Dropbox, Box to make your snippet available across all your devices.
+
 ## Roadmap  
 Here are some features that are currently on the roadmap:  
 1. Support concurrent execution of steps  
