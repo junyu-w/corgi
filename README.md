@@ -8,7 +8,7 @@
 
 Corgi is a command-line tool that helps with your repetitive command usages by organizing them into reusable snippet. See usage by simply running `corgi` or `corgi --help`
 
-Current version: **v0.2.3**
+Current version: **v0.2.4**
 ## Examples
 
 Create a new snippet to automate the commands you run repetitively
@@ -29,6 +29,7 @@ Execute an existing snippet knowing what command is being run and its output
     - [Create a snippet](#create-a-snippet)
         - [Create from command history](#create-from-command-history)
         - [Define template fields in snippet](#define-template-fields-in-snippet)
+        - [Multi-line command support](#multi-line-command-support)
     - [List snippets](#list-snippets)
     - [Execute a snippet](#execute-a-snippet)
         - [Use default value without prompt](#use-default-value-without-prompt)
@@ -41,6 +42,9 @@ Execute an existing snippet knowing what command is being run and its output
         - [Export snippets to JSON and SHELL script](#export-snippets-to-json-and-shell-script)
     - [Remove a snippet](#remove-a-snippet)
     - [Configure corgi](#configure-corgi)
+        - [Choose your favorite text editor](#choose-your-favorite-text-editor)
+        - [Choose your favorite fuzzy matcher](#choose-your-favorite-fuzzy-matcher)
+        - [Choose the directory to store all your snippets](#choose-the-directory-to-store-all-your-snippets)
 - [Roadmap](#roadmap)
 - [Note](#note)
   
@@ -102,6 +106,17 @@ And you will be prompted to enter values for those fields when the snippet execu
 
 Also if you have field with **multiple default values**, the latest appearance will take precedence over the previous values.
 
+#### Multi-line command support
+`corgi` also supports multi-line command where each line has trailling character `"\"`. For example,
+```
+Step 1:
+Command: docker run -p 2181:2181 -p 9092:9092 \
+> --env ADVERTISED_HOST="172.17.0.1" \
+> --env ADVERTISED_PORT=9092 \
+> --env NUM_PARTITIONS="2" \
+> --env TOPICS="topic1,topic2" \
+> spotify/kafka
+```
 
 ### List snippets  
 To view all snippets saved on your system, run  
@@ -182,11 +197,25 @@ corgi remove [<title of the snippet>]
 ```
   
 ### Configure `corgi` 
-You can configure your text editor choice (default is `vim`) for snippet editing, and filter tool for interactive snippet selection. To configure the corgi CLI, run  
+You can configure corgi to use your existing tools or services and make it more usable (and fluffy)
+
+#### Choose your favorite text editor
+You can configure your text editor choice (default is `vim`) for snippet editing, simply run  
 ```  
-corgi config [--editor <editor of your choice>] [--filter-cmd <fzf, peco or something else>]
+corgi config --editor <editor of your choice, eg. vim, subl, atom, code etc>
+```
+#### Choose your favorite fuzzy matcher
+You can also choose your favorite filter tool (default is 'fzf') for interactive snippet selection by running
 ```  
-  
+corgi config --filter-cmd <fuzzy finder like fzf, peco etc>
+```
+#### Choose the directory to store all your snippets
+You can configure the path to store all your snippets by running
+```  
+corgi config --snippets-dir <path, eg. ~/Dropbox/my_corgi_snippets>
+```
+This way, you can use online file sync/backup services like Dropbox, Box to make your snippet available across all your devices.
+
 ## Roadmap  
 Here are some features that are currently on the roadmap:  
 1. Support concurrent execution of steps  

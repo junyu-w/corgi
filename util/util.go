@@ -17,6 +17,7 @@ const (
 	JSON_MARSHAL_PREFIX = ""
 	JSON_MARSHAL_INDENT = "  "
 	STEP_RANGE_SEP      = "-"
+	NEXT_LINE_SUFFIX    = "\\"
 )
 
 const (
@@ -52,6 +53,7 @@ func Scan(prompt string, defaultInp string, historyFile string) (string, error) 
 	}
 	defer rl.Close()
 
+	var cmds []string
 	for {
 		line, err := rl.ReadlineWithDefault(defaultInp)
 		if err != nil {
@@ -61,13 +63,29 @@ func Scan(prompt string, defaultInp string, historyFile string) (string, error) 
 		if line == "" {
 			continue
 		}
-		return line, nil
+		if strings.HasSuffix(line, NEXT_LINE_SUFFIX) {
+			cmds = append(cmds, strings.TrimRight(line, NEXT_LINE_SUFFIX))
+			rl.SetPrompt("> ")
+			continue
+		} else {
+			cmds = append(cmds, line)
+		}
+		cmd := strings.Join(cmds, " ")
+		cmds = cmds[:0]
+		rl.SetPrompt(prompt)
+		rl.SaveHistory(cmd)
+		return cmd, nil
 	}
 	return "", errors.New("cancelled")
 }
 
 func Execute(command string, r io.Reader, w io.Writer) error {
-	cmd := exec.Command("sh", "-c", strings.TrimSpace(command))
+	// Retrieve the default shell. Otherwise, fallback to `sh`
+	defaultShell, isPresent := os.LookupEnv("SHELL")
+	if !isPresent {
+		defaultShell = "sh"
+	}
+	cmd := exec.Command(defaultShell, "-c", strings.TrimSpace(command))
 	cmd.Stdin = r
 	cmd.Stdout = w
 	cmd.Stderr = os.Stderr

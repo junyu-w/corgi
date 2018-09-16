@@ -14,7 +14,7 @@ var importCmd = &cobra.Command{
 
 func importSnippet(cmd *cobra.Command, args []string) error {
 	// load config and snippets
-	conf, snippetsMeta, err := loadConfigAndSnippetsMeta()
+	_, snippetsMeta, err := loadConfigAndSnippetsMeta()
 	if err != nil {
 		return err
 	}
@@ -25,7 +25,7 @@ func importSnippet(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return err
 		}
-		if err = snippetsMeta.SaveNewSnippet(s, conf.SnippetsDir); err != nil {
+		if err = snippetsMeta.SaveNewSnippet(s); err != nil {
 			return err
 		}
 	}
