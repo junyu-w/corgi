@@ -137,6 +137,9 @@ func (sm *SnippetsMeta) FindSnippet(title string) (*Snippet, error) {
 	}
 	s, err := LoadSnippet(sm.Snippets[idx].FileLoc)
 	if err != nil {
+		if os.IsNotExist(err) {
+			return nil, fmt.Errorf("%s\nSnippets directory path: %s, check if snippet file exists inside.", err.Error(), sm.snippetsDir)
+		}
 		return nil, err
 	}
 	return s, nil

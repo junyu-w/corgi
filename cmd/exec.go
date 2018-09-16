@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
@@ -34,7 +35,7 @@ func execute(cmd *cobra.Command, args []string) error {
 	// find snippet corresponds to title
 	s, err := snippetsMeta.FindSnippet(title)
 	if err != nil {
-		return fmt.Errorf("%s, run \"corgi list\" to view all snippets", err.Error())
+		return fmt.Errorf("%s Run \"corgi list\" to view all snippets", err.Error())
 	}
 	s.Execute(useDefaultParamValue, stepRange)
 	return nil
