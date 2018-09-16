@@ -35,17 +35,22 @@ func (sm *SnippetsMeta) SetSnippetsDir(path string) {
 
 func (sm *SnippetsMeta) SyncWithSnippets() error {
 	for _, s := range sm.Snippets {
-		snippet, err := sm.FindSnippet(s.Title)
-		// sync name and path
-		newFileName := getSnippetFileName(s.Title)
-		newFilePath := path.Join(sm.snippetsDir, newFileName)
-		if err == nil && s.Title != snippet.Title {
+		// update file location to always use snippetsDir
+		s.FileLoc = path.Join(sm.snippetsDir, getSnippetFileName(s.Title))
+		snippet, err := LoadSnippet(s.FileLoc)
+		if err != nil {
+			return err
+		}
+		// if title changed in snippet file, then update both file name and title in meta
+		if s.Title != snippet.Title {
+			newFileName := getSnippetFileName(snippet.Title)
+			newFilePath := path.Join(sm.snippetsDir, newFileName)
 			s.Title = snippet.Title
 			if err = os.Rename(s.FileLoc, newFilePath); err != nil {
 				return err
 			}
+			s.FileLoc = newFilePath
 		}
-		s.FileLoc = newFilePath
 	}
 	sm.IsMetaDirty = false
 	if err := sm.Save(); err != nil {
