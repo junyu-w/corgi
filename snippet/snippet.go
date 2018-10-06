@@ -140,17 +140,20 @@ func (snippet *Snippet) Export(outputPath string, fileType string) error {
 }
 
 func (snippet *Snippet) ConvertToShellScript() string {
+	green := color.New(color.FgGreen).SprintFunc()
+	yellow := color.New(color.FgYellow).SprintFunc()
+
 	templateFieldMap := snippet.BuildTemplateFieldMap()
 	shellCmds := []string{}
 	// headline
 	shellCmds = append(shellCmds, "#!/bin/bash")
 	// convert title
-	titleShell := fmt.Sprintf("echo -e \"%sStart executing snippet %s...%s\"\n", util.SHELL_GREEN, snippet.Title, util.SHELL_NO_COLOR)
+	titleShell := fmt.Sprintf("echo -e \"%s\"\n", green(fmt.Sprintf("Start executing snippet %s...", snippet.Title)))
 	shellCmds = append(shellCmds, titleShell)
 	// convert each step
 	for idx, step := range snippet.Steps {
 		stepCount := idx + 1
-		stepIndexShell := fmt.Sprintf("echo -e \"\n%sStep %d:%s %s%s\"", util.SHELL_GREEN, stepCount, util.SHELL_YELLOW, step.Description, util.SHELL_NO_COLOR)
+		stepIndexShell := fmt.Sprintf("echo -e \"\nStep %d: %s\"", green(stepCount), yellow(step.Description))
 		stepShell := step.ConvertToShellScript(&templateFieldMap)
 		shellCmds = append(shellCmds, stepIndexShell, stepShell, "\n")
 	}
