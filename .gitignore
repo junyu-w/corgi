@@ -1,6 +1,7 @@
 # editor specifics
 .idea
 .vscode
+*.swp
 
 # Binaries for programs and plugins
 *.exe
@@ -17,6 +18,7 @@
 
 # build
 build/*
+corgi
 
 # vendor
 vendor/*

@@ -47,6 +47,9 @@ func (step *StepInfo) AskQuestion(options ...interface{}) error {
 }
 
 func (step *StepInfo) ConvertToShellScript(templates *TemplateFieldMap) string {
+	green := color.New(color.FgGreen).SprintFunc()
+	yellow := color.New(color.FgYellow).SprintFunc()
+
 	shellCmds := make([]string, 0)
 	templateFieldsMap := ParseTemplateFieldsMap(step.Command)
 	for field := range templateFieldsMap {
@@ -59,7 +62,7 @@ func (step *StepInfo) ConvertToShellScript(templates *TemplateFieldMap) string {
 				defaultValPrompt = existingTf.Value
 				defaultValueShell = fmt.Sprintf("%s=${%s:-%s}", field, field, existingTf.Value)
 			}
-			inputPromptShell := fmt.Sprintf("read -p \"%sEnter value for <%s> (default: %s): %s\" %s", util.SHELL_GREEN, field, defaultValPrompt, util.SHELL_NO_COLOR, field)
+			inputPromptShell := fmt.Sprintf("read -p \"%s\" %s", green(fmt.Sprintf("Enter value for <%s> (default: %s):", field, defaultValPrompt)), field)
 			existingTf.Asked = true
 			shellCmds = append(shellCmds, inputPromptShell, defaultValueShell)
 		}
@@ -70,7 +73,7 @@ func (step *StepInfo) ConvertToShellScript(templates *TemplateFieldMap) string {
 		field, _ := getParamNameAndValue(sub)
 		return fmt.Sprintf("$%s", field)
 	})
-	runningPromptShell := fmt.Sprintf("echo -e \"%sRunning: %s%s%s\"", util.SHELL_GREEN, util.SHELL_YELLOW, executeShell, util.SHELL_NO_COLOR)
+	runningPromptShell := fmt.Sprintf(`echo -e "%s %s"`, green("Running:"), yellow(executeShell))
 	shellCmds = append(shellCmds, runningPromptShell, executeShell)
 	return strings.Join(shellCmds, "\n")
 }
